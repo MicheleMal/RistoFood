@@ -1,10 +1,6 @@
+import { Role } from 'src/enums/roles.enum';
 import { Order } from 'src/orders/order.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-
-enum Role {
-  ADMIN = 'admin',
-  STAFF = 'staff',
-}
 
 @Entity({ name: 'users' })
 export class User {
@@ -30,6 +26,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: Role,
+    default: Role.STAFF
   })
   role: Role;
 

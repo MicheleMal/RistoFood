@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -31,21 +32,24 @@ export class Order {
   n_table: number;
 
   @Column({
-    type: 'double',
+    type: 'decimal',
     default: 0,
+    precision: 10,
+    scale: 2
   })
   price_total: number;
 
   @Column({
     type: 'enum',
     enum: State,
+    default: State.WAIT
   })
   state: State;
 
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne(() => User, (user) => user.orders, {nullable: false})
   @JoinColumn({ name: 'id_user' })
   user: User;
 
-  @ManyToOne(()=>OrderDish, (orderDish)=>orderDish.order)
+  @OneToMany(()=>OrderDish, (orderDish)=>orderDish.order)
   order_dishes: OrderDish[]
 }

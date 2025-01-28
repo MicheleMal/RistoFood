@@ -1,5 +1,5 @@
 import { OrderDish } from 'src/order-dish/order-dish.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 enum Category{
     ANTIPASTO = "antipasto",
@@ -28,7 +28,9 @@ export class Dish {
     description: string
 
     @Column({
-        type: "double"
+        type: "decimal",
+        precision: 10,
+        scale: 2
     })
     price: number
 
@@ -38,7 +40,7 @@ export class Dish {
     })
     category: Category
 
-    @ManyToOne(()=>OrderDish, (orderDish)=>orderDish.dish)
+    @OneToMany(()=>OrderDish, (orderDish)=>orderDish.dish)
     order_dishes: OrderDish[]
 
 }
