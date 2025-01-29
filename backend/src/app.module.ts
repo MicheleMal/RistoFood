@@ -7,7 +7,7 @@ import { Order } from './orders/order.entity';
 import { Dish } from './dishes/dish.entity';
 import { OrderDish } from './order-dish/order-dish.entity';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './users/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 

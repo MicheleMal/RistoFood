@@ -2,7 +2,9 @@ import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
 import { Role } from 'src/enums/roles.enum';
 
 export class UpdateUserDto {
-  @IsString()
+  @IsString({
+    message: 'Enter a string format',
+  })
   @IsOptional()
   username?: string;
 
