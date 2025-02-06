@@ -9,10 +9,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
-import { AuthGuard } from '../../auth/guard/auth.guard';
+import { AuthGuard } from '../../auth/guards/auth/auth.guard';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UserProfileDto } from '../dtos/user-profile.dto';
 import { ResponseUpdateUserDto } from '../dtos/response-update-user.dto';
+import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
 
 @Controller('users')
 export class UsersController {

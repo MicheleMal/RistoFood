@@ -3,7 +3,9 @@ import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from 'class-validato
 import { Role } from 'src/enums/roles.enum';
 
 export class CreateUserDto {
-  @IsString()
+  @IsString({
+    message: 'Enter a string format',
+  })
   username: string;
 
   @IsEmail()

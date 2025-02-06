@@ -1,15 +1,6 @@
+import { Category } from 'src/enums/categories.enum';
 import { OrderDish } from 'src/order-dish/order-dish.entity';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-
-enum Category{
-    ANTIPASTO = "antipasto",
-    PRIMO = "primo",
-    SECONDO = "secondo",
-    CONTORNO = "contorno",
-    DOLCE = "dolce",
-    BEVANDA = "bevanda",
-    PIZZA = "pizza"
-}
 
 @Entity({ name: 'dishes' })
 export class Dish {
