@@ -9,6 +9,8 @@ import { Between, Repository } from 'typeorm';
 import { CreateDishDto } from '../dtos/create-dish.dto';
 import { Category } from 'src/enums/categories.enum';
 import { UpdateDishDto } from '../dtos/update-dish.dto';
+import { ResponseDishDto } from '../dtos/response-dish.dto';
+import { responseDeleteDto } from 'src/dto/response-delete.dto';
 
 @Injectable()
 export class DishesService {
@@ -50,8 +52,7 @@ export class DishesService {
     return allDishes;
   }
 
-  //? Scrivere dto per la risposta dell'update andato a buon fine
-  async updateDish(id: number, updateDishDto: UpdateDishDto) {
+  async updateDish(id: number, updateDishDto: UpdateDishDto): Promise<ResponseDishDto> {
     const updateDish = await this.dishRepository.update(id, updateDishDto);
 
     if (updateDish.affected === 0) {
@@ -64,19 +65,10 @@ export class DishesService {
       },
     });
 
-    return {
-      message: 'Dish updated successfully',
-      error: null,
-      statusCode: 200,
-      data: dish,
-    };
+    return dish
   }
 
-  async deleteDish(id: number): Promise<{
-    message: string;
-    error: number | null;
-    statusCode: number;
-  }> {
+  async deleteDish(id: number): Promise<responseDeleteDto> {
     const deleteDish = await this.dishRepository.delete(id);
 
     if (deleteDish.affected === 0) {

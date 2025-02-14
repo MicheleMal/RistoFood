@@ -1,40 +1,56 @@
-import { ArrayNotEmpty, IsArray, IsDecimal, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, Min, ValidateNested } from "class-validator"
-import { State } from "src/enums/states.enum"
-import { Order } from "../order.entity"
-import { Type } from "class-transformer"
-import { OrderDishDto } from "./order-dish.dto"
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsDecimal,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Min,
+  ValidateNested,
+} from 'class-validator';
+import { State } from 'src/enums/states.enum';
+import { Order } from '../order.entity';
+import { Type } from 'class-transformer';
+import { OrderDishDto } from './order-dish.dto';
 
-export class CreateOrderDto{
+export class CreateOrderDto {
+  @IsNumber()
+  @Min(1)
+  @IsNotEmpty()
+  @IsOptional()
+  n_person?: number;
 
-    // @IsNumber()
-    @IsNumber()
-    @Min(1)
-    n_person: number
+  @IsNumber()
+  @IsNotEmpty()
+  n_table: number;
 
-    @IsNumber()
-    n_table: number
+  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
+  price_total?: number;
 
-    @IsOptional()
-    @IsNumber()
-    price_total?: number
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(State, {
+    message: 'You must enter a role between admin and staff',
+  })
+  state?: State;
 
-    @IsOptional()
-    @IsEnum(State)
-    state?: State
+  @ArrayNotEmpty()
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => OrderDishDto)
+  dishes: OrderDishDto[];
 
-    @ArrayNotEmpty()
-    @ValidateNested({each: true})
-    @Type(()=>OrderDishDto)
-    dishes: OrderDishDto[]
+  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
+  id_order?: number;
 
-    @IsOptional()
-    @IsNotEmpty()
-    @IsNumber()
-    id_order?: number
-    
-    @IsNumber()
-    @IsOptional()
-    @IsNotEmpty()
-    id_user?: number
-
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
+  id_user?: number;
 }

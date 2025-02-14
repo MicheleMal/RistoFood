@@ -1,14 +1,23 @@
 import { Transform } from 'class-transformer';
-import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { Role } from 'src/enums/roles.enum';
 
 export class CreateUserDto {
   @IsString({
     message: 'Enter a string format',
   })
+  @IsNotEmpty()
   username: string;
 
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @IsString({
@@ -17,12 +26,13 @@ export class CreateUserDto {
   @MinLength(8, {
     message: 'Password must be at least 8 characters long',
   })
+  @IsNotEmpty()
   password: string;
 
   @IsOptional()
   @IsEnum(Role, {
-    message: "You must enter a role between admin and staff"
+    message: 'You must enter a role between admin and staff',
   })
-  // @Transform(({value})=>value ?? Role.STAFF)
-  role: Role;
+  @IsNotEmpty()
+  role?: Role;
 }

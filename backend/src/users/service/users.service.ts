@@ -6,6 +6,7 @@ import { UserProfileDto } from '../dtos/user-profile.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import * as bcrypt from "bcrypt"
 import { ResponseUpdateUserDto } from '../dtos/response-update-user.dto';
+import { responseDeleteDto } from 'src/dto/response-delete.dto';
 
 @Injectable()
 export class UsersService {
@@ -66,7 +67,7 @@ export class UsersService {
     };
   }
 
-  async deleteUser(req: Request): Promise<{message: string, error: string | null, statusCode: number}>{
+  async deleteUser(req: Request): Promise<responseDeleteDto>{
     const {user_id} = req["user"]
     const deletedUser = await this.userRepository.delete(user_id)
 

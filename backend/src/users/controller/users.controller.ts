@@ -14,6 +14,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UserProfileDto } from '../dtos/user-profile.dto';
 import { ResponseUpdateUserDto } from '../dtos/response-update-user.dto';
 import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
+import { responseDeleteDto } from 'src/dto/response-delete.dto';
 
 @Controller('users')
 export class UsersController {
@@ -41,7 +42,7 @@ export class UsersController {
   @Delete('delete')
   deleteUser(
     @Request() req: Request,
-  ): Promise<{ message: string; error: string | null; statusCode: number }> {
+  ): Promise<responseDeleteDto> {
     return this.usersService.deleteUser(req);
   }
 }

@@ -1,17 +1,30 @@
-import { IsArray, IsNumber, IsOptional, IsString } from "class-validator"
-import { User } from "../user.entity"
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { User } from '../user.entity';
+import { Type } from 'class-transformer';
 
-export class ResponseUpdateUserDto{
+export class ResponseUpdateUserDto {
+  @IsString()
+  @IsNotEmpty()
+  message: string;
 
-    @IsString()
-    message: string
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  error?: string | null;
 
-    @IsOptional()
-    @IsString()
-    error?: string | null
+  @IsNumber()
+  @IsNotEmpty()
+  statusCode: number;
 
-    @IsNumber()
-    statusCode: number
-
-    data: User
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => User)
+  data: User;
 }

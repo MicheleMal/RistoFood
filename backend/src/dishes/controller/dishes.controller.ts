@@ -20,8 +20,10 @@ import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/enums/roles.enum';
 import { AuthGuard } from 'src/auth/guards/auth/auth.guard';
+import { ResponseDishDto } from '../dtos/response-dish.dto';
+import { responseDeleteDto } from 'src/dto/response-delete.dto';
 
-@Controller('dishes')
+@Controller('menu')
 export class DishesController {
   constructor(private readonly dishesService: DishesService) {}
 
@@ -52,18 +54,14 @@ export class DishesController {
   updateDish(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateDishDto: UpdateDishDto,
-  ) {
+  ): Promise<ResponseDishDto> {
     return this.dishesService.updateDish(id, updateDishDto);
   }
 
   @Delete('delete/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  deleteDish(@Param('id', ParseIntPipe) id: number): Promise<{
-    message: string;
-    error: number | null;
-    statusCode: number;
-  }> {
+  deleteDish(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto> {
     return this.dishesService.deleteDish(id);
   }
 }

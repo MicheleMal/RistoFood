@@ -9,6 +9,7 @@ import { Dish } from 'src/dishes/dish.entity';
 import { ResponseOrderDto } from '../dtos/response-order.dto';
 import { UpdateOrderDto } from '../dtos/update-order.dto';
 import { State } from 'src/enums/states.enum';
+import { responseDeleteDto } from 'src/dto/response-delete.dto';
 
 @Injectable()
 export class OrdersService {
@@ -251,11 +252,7 @@ export class OrdersService {
     };
   }
 
-  async deleteOrder(id: number): Promise<{
-    message: string,
-    error: number | null,
-    statusCode: number
-  }>{
+  async deleteOrder(id: number): Promise<responseDeleteDto>{
 
     const deleteOrder = await this.orderRepository.delete(id)
 

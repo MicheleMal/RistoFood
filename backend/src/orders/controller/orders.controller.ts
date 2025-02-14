@@ -20,6 +20,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/enums/roles.enum';
 import { ResponseOrderDto } from '../dtos/response-order.dto';
 import { UpdateOrderDto } from '../dtos/update-order.dto';
+import { responseDeleteDto } from 'src/dto/response-delete.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -61,7 +62,7 @@ export class OrdersController {
   updateOrder(
     @Body(ValidationPipe) updateOrderDto: UpdateOrderDto,
     @Param('id', ParseIntPipe) id: number,
-  ) {
+  ): Promise<ResponseOrderDto> {
     return this.ordersService.updateOrder(updateOrderDto, id);
   }
 
@@ -81,11 +82,7 @@ export class OrdersController {
   @Delete("delete/:id")
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<{
-    message: string,
-    error: number | null,
-    statusCode: number
-  }>{
+  deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto>{
     return this.ordersService.deleteOrder(id)
   }
 }
