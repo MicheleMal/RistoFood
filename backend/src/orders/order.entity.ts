@@ -1,4 +1,5 @@
-import { OrderDish } from 'src/order-dish/order-dish.entity';
+import { State } from 'src/enums/states.enum';
+import { OrderDish } from 'src/orders/order-dish.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -8,12 +9,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-enum State {
-  WAIT = 'wait',
-  PREPARATION = 'preparation',
-  COMPLETED = 'completed',
-}
 
 @Entity({ name: 'orders' })
 export class Order {
@@ -35,21 +30,21 @@ export class Order {
     type: 'decimal',
     default: 0,
     precision: 10,
-    scale: 2
+    scale: 2,
   })
   price_total: number;
 
   @Column({
     type: 'enum',
     enum: State,
-    default: State.WAIT
+    default: State.WAIT,
   })
   state: State;
 
-  @ManyToOne(() => User, (user) => user.orders, {nullable: false})
-  @JoinColumn({ name: 'id_user' })
+  @ManyToOne(() => User, (user) => user.orders, { nullable: false, onDelete: "CASCADE" })
+  @JoinColumn({ name: 'id_user', referencedColumnName: 'id' })
   user: User;
 
-  @OneToMany(()=>OrderDish, (orderDish)=>orderDish.order)
-  order_dishes: OrderDish[]
+  @OneToMany(() => OrderDish, (orderDish) => orderDish.order)
+  order_dishes: OrderDish[];
 }

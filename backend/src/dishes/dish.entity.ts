@@ -1,5 +1,5 @@
 import { Category } from 'src/enums/categories.enum';
-import { OrderDish } from 'src/order-dish/order-dish.entity';
+import { OrderDish } from 'src/orders/order-dish.entity';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'dishes' })

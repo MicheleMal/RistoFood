@@ -26,11 +26,11 @@ export class OrderDish {
   })
   quantity: number;
 
-  @ManyToOne(() => Order, (order) => order.order_dishes, { nullable: false })
+  @ManyToOne(() => Order, (order) => order.order_dishes, { nullable: false, onDelete: "CASCADE"})
   @JoinColumn({ name: 'id_order' })
   order: Order;
 
-  @ManyToOne(() => Dish, (dish) => dish.order_dishes, { nullable: false })
+  @ManyToOne(() => Dish, (dish) => dish.order_dishes, { nullable: false, onDelete: "CASCADE"})
   @JoinColumn({ name: 'id_dish' })
   dish: Dish;
 }
