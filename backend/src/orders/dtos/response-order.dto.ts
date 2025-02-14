@@ -3,10 +3,12 @@ import { OrderDishDto } from './order-dish.dto';
 import { ResponseUserDto } from 'src/auth/dtos/response-user.dto';
 import {
   ArrayNotEmpty,
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -31,6 +33,15 @@ export class ResponseOrderDto {
   })
   @IsNotEmpty()
   state: State;
+
+  @IsString()
+  @IsNotEmpty()
+  notes: string
+
+  @IsNotEmpty()
+  @Type(()=>Date)
+  @IsDate()
+  date: Date
 
   @ArrayNotEmpty()
   @IsNotEmpty()

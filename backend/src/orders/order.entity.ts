@@ -41,6 +41,18 @@ export class Order {
   })
   state: State;
 
+  @Column({
+    type: "varchar",
+    default: ""
+  })
+  notes: string
+
+  @Column({
+    type: "timestamp",
+    default: ()=>"CURRENT_TIMESTAMP"
+  })
+  date: Date
+
   @ManyToOne(() => User, (user) => user.orders, { nullable: false, onDelete: "CASCADE" })
   @JoinColumn({ name: 'id_user', referencedColumnName: 'id' })
   user: User;

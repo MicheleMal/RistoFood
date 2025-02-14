@@ -25,6 +25,7 @@ export class OrdersService {
     createOrderDto: CreateOrderDto,
     req: Request,
   ): Promise<ResponseOrderDto> {
+
     const { user_id } = req['user'];
 
     const user = await this.userRepository.findOne({
@@ -33,6 +34,7 @@ export class OrdersService {
       },
     });
 
+    // createOrderDto.date = new Date()
     const newOrder = await this.orderRepository.save({
       ...createOrderDto,
       user: user,
@@ -67,6 +69,8 @@ export class OrdersService {
       n_person: createOrderDto.n_person,
       n_table: createOrderDto.n_table,
       state: newOrder.state,
+      notes: newOrder.notes,
+      date: newOrder.date,
       dishes: orderDishes.map((orderDish) => ({
         id_dish: orderDish.id,
         name: orderDish.dish.name,
@@ -88,6 +92,8 @@ export class OrdersService {
       n_person: order.n_person,
       n_table: order.n_table,
       state: order.state,
+      notes: order.notes,
+      date: order.date,
       dishes: order.order_dishes.map((orderDish) => ({
         id_dish: orderDish.dish.id,
         name: orderDish.dish.name,
@@ -121,6 +127,8 @@ export class OrdersService {
       n_person: order.n_person,
       n_table: order.n_table,
       state: order.state,
+      notes: order.notes,
+      date: order.date,
       dishes: order.order_dishes.map((orderDish)=>({
         id_dish: orderDish.dish.id,
         name: orderDish.dish.name,
@@ -177,6 +185,8 @@ export class OrdersService {
       n_person: order.n_person,
       n_table: order.n_table,
       state: order.state,
+      notes: order.notes,
+      date: order.date,
       dishes: order.order_dishes.map((orderDish) => ({
         id_dish: orderDish.dish.id,
         name: orderDish.dish.name,
@@ -237,6 +247,8 @@ export class OrdersService {
       n_person: order.n_person,
       n_table: order.n_table,
       state: order.state,
+      notes: order.notes,
+      date: order.date,
       dishes: order.order_dishes.map((orderDish) => ({
         id_dish: id_dish,
         name: orderDish.dish.name,

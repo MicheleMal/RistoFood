@@ -1,12 +1,14 @@
 import {
   ArrayNotEmpty,
   IsArray,
+  IsDate,
   IsDecimal,
   IsEnum,
   IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -37,6 +39,17 @@ export class CreateOrderDto {
     message: 'You must enter a role between admin and staff',
   })
   state?: State;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  notes?: string
+
+  @IsNotEmpty()
+  @IsOptional()
+  @Type(()=>Date)
+  @IsDate()
+  date?: Date
 
   @ArrayNotEmpty()
   @IsNotEmpty()
