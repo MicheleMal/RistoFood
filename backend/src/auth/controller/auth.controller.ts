@@ -12,7 +12,7 @@ export class AuthController {
 
   // Register a new user
   @Post('register')
-  register(
+  async register(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<ResponseUserDto> {
     return this.authService.register(createUserDto);
@@ -20,20 +20,20 @@ export class AuthController {
 
   // Login user
   @Post('login')
-  login(
+  async login(
     @Body(ValidationPipe) loginUserDto: LoginUserDto,
   ): Promise<ResponseTokenDto> {
     return this.authService.login(loginUserDto);
   }
 
   @Post('refresh')
-  refresh(@Body('token') token: string, @Body('id') id: number): Promise<ResponseTokenDto>{
+  async refresh(@Body('token') token: string, @Body('id') id: number): Promise<ResponseTokenDto>{
     return this.authService.refreshToken(id, token)
   }
 
   @Post('logout')
   @UseGuards(AuthGuard)
-  logout(@Request() req: Request): Promise<{message: string}>{
+  async logout(@Request() req: Request): Promise<{message: string}>{
     return this.authService.logout(req)
   }
 }

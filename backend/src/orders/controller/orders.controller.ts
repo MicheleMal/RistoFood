@@ -30,7 +30,7 @@ export class OrdersController {
   @Post('insert')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  insertNewDish(
+  async insertNewDish(
     @Body(ValidationPipe) createOrderDto: CreateOrderDto,
     @Request() req: Request,
   ): Promise<ResponseOrderDto> {
@@ -41,7 +41,7 @@ export class OrdersController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  getAllOrder(): Promise<ResponseOrderDto[]> {
+  async getAllOrder(): Promise<ResponseOrderDto[]> {
     return this.ordersService.getAllOrder();
   }
 
@@ -49,7 +49,7 @@ export class OrdersController {
   @Get('/table/:n_table')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  getOrderByTableNumber(
+  async getOrderByTableNumber(
     @Param('n_table', ParseIntPipe) n_table: number,
   ): Promise<ResponseOrderDto[]> {
     return this.ordersService.getOrderByTableNumber(n_table);
@@ -59,7 +59,7 @@ export class OrdersController {
   @Patch('update/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  updateOrder(
+  async updateOrder(
     @Body(ValidationPipe) updateOrderDto: UpdateOrderDto,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseOrderDto> {
@@ -70,7 +70,7 @@ export class OrdersController {
   @Put('update/:id/dish/:id_dish')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  updateOrderDish(
+  async updateOrderDish(
     @Param('id', ParseIntPipe) id: number,
     @Param('id_dish', ParseIntPipe) id_dish: number,
     @Body('quantity', ParseIntPipe) quantity: number,
@@ -82,7 +82,7 @@ export class OrdersController {
   @Delete("delete/:id")
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto>{
+  async deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto>{
     return this.ordersService.deleteOrder(id)
   }
 }

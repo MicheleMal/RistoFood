@@ -23,14 +23,14 @@ export class UsersController {
   // Get the user authenticated
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req: Request): Promise<UserProfileDto> {
+  async getProfile(@Request() req: Request): Promise<UserProfileDto> {
     return this.usersService.getProfile(req);
   }
 
   // Edit authenticated user information
   @UseGuards(AuthGuard)
   @Patch('update')
-  updateUser(
+  async updateUser(
     @Request() req: Request,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
   ): Promise<ResponseUpdateUserDto> {
@@ -40,7 +40,7 @@ export class UsersController {
   // Delete authenticated user
   @UseGuards(AuthGuard)
   @Delete('delete')
-  deleteUser(
+  async deleteUser(
     @Request() req: Request,
   ): Promise<responseDeleteDto> {
     return this.usersService.deleteUser(req);

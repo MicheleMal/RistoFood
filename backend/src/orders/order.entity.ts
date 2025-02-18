@@ -27,6 +27,13 @@ export class Order {
   n_table: number;
 
   @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 2
+  })
+  cover_charge: number
+
+  @Column({
     type: 'decimal',
     default: 0,
     precision: 10,

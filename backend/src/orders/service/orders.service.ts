@@ -56,7 +56,8 @@ export class OrdersService {
         dish: dish,
       });
 
-      priceTotal += dishDto.quantity * dish.price;
+
+      priceTotal += (dishDto.quantity * dish.price) + (createOrderDto.cover_charge * createOrderDto.n_person);
       orderDishes.push(await this.orderDishRepository.save(orderDishCreate));
     }
 
@@ -78,6 +79,7 @@ export class OrdersService {
         single_price: orderDish.dish.price,
         quantity: orderDish.quantity,
       })),
+      cover_charge: createOrderDto.cover_charge,
       price_total: newOrder.price_total,
     };
   }
@@ -101,6 +103,7 @@ export class OrdersService {
         single_price: orderDish.dish.price,
         quantity: orderDish.quantity,
       })),
+      cover_charge: order.cover_charge,
       price_total: order.price_total,
       user: {
         username: order.user.username,
@@ -136,6 +139,7 @@ export class OrdersService {
         single_price: orderDish.dish.price,
         quantity: orderDish.quantity
       })),
+      cover_charge: order.cover_charge,
       price_total: order.price_total,
       user: {
         username: order.user.username,
@@ -194,6 +198,7 @@ export class OrdersService {
         single_price: orderDish.dish.price,
         quantity: orderDish.quantity,
       })),
+      cover_charge: order.cover_charge,
       price_total: order.price_total,
       user: {
         username: order.user.username,
@@ -257,6 +262,7 @@ export class OrdersService {
         quantity: quantity,
       })),
       price_total: new_price_total,
+      cover_charge: order.cover_charge,
       user: {
         username: order.user.username,
         role: order.user.role,

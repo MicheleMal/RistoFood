@@ -28,6 +28,10 @@ export class CreateOrderDto {
   @IsNotEmpty()
   n_table: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  cover_charge: number
+  
   @IsOptional()
   @IsNotEmpty()
   @IsNumber()

@@ -52,6 +52,10 @@ export class ResponseOrderDto {
 
   @IsNumber()
   @IsNotEmpty()
+  cover_charge: number
+
+  @IsNumber()
+  @IsNotEmpty()
   price_total: number;
 
   @IsOptional()

@@ -29,7 +29,7 @@ export class DishesController {
 
   // Get all dishes
   @Get('all')
-  getAllDishes(
+  async getAllDishes(
     @Query('c') category?: Category,
     @Query('min_p') min_price?: number,
     @Query('max_p') max_price?: number,
@@ -41,7 +41,7 @@ export class DishesController {
   @Post('insert')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  insertNewDish(
+  async insertNewDish(
     @Body(ValidationPipe) createDishDto: CreateDishDto,
   ): Promise<CreateDishDto> {
     return this.dishesService.insertNewDish(createDishDto);
@@ -51,7 +51,7 @@ export class DishesController {
   @Patch('update/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  updateDish(
+  async updateDish(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateDishDto: UpdateDishDto,
   ): Promise<ResponseDishDto> {
@@ -61,7 +61,7 @@ export class DishesController {
   @Delete('delete/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  deleteDish(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto> {
+  async deleteDish(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto> {
     return this.dishesService.deleteDish(id);
   }
 }
