@@ -35,4 +35,11 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   role?: Role;
+
+  @IsString({
+    message: 'Enter a string format',
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  refresh_toke?: string
 }

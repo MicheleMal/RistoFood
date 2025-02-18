@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -26,6 +26,9 @@ export class AuthGuard implements CanActivate {
 
       request['user'] = payload;
     } catch (error) {
+      if(error instanceof TokenExpiredError){
+        throw new UnauthorizedException('Jwt expired');
+      }
       throw new UnauthorizedException('Invalid token');
     }
 

@@ -30,6 +30,12 @@ export class User {
   })
   role: Role;
 
+  @Column({
+    type: "varchar",
+    nullable: true
+  }) 
+  refresh_token: string | null
+
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
 }
