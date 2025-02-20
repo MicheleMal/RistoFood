@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Request,
   UseGuards,
   ValidationPipe,
@@ -21,6 +22,7 @@ import { Role } from 'src/enums/roles.enum';
 import { ResponseOrderDto } from '../dtos/response-order.dto';
 import { UpdateOrderDto } from '../dtos/update-order.dto';
 import { responseDeleteDto } from 'src/dto/response-delete.dto';
+import { State } from 'src/enums/states.enum';
 
 @Controller('orders')
 export class OrdersController {
@@ -41,8 +43,10 @@ export class OrdersController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  async getAllOrder(): Promise<ResponseOrderDto[]> {
-    return this.ordersService.getAllOrder();
+  async getAllOrder(
+    @Query('s') state?: State,
+  ): Promise<ResponseOrderDto[]> {
+    return this.ordersService.getAllOrder(state);
   }
 
   // Get orders by table number
@@ -79,10 +83,12 @@ export class OrdersController {
   }
 
   // Delete order
-  @Delete("delete/:id")
+  @Delete('delete/:id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
-  async deleteOrder(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto>{
-    return this.ordersService.deleteOrder(id)
+  async deleteOrder(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<responseDeleteDto> {
+    return this.ordersService.deleteOrder(id);
   }
 }

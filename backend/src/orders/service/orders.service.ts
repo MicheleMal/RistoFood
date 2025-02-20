@@ -25,7 +25,6 @@ export class OrdersService {
     createOrderDto: CreateOrderDto,
     req: Request,
   ): Promise<ResponseOrderDto> {
-
     const { user_id } = req['user'];
 
     const user = await this.userRepository.findOne({
@@ -56,8 +55,9 @@ export class OrdersService {
         dish: dish,
       });
 
-
-      priceTotal += (dishDto.quantity * dish.price) + (createOrderDto.cover_charge * createOrderDto.n_person);
+      priceTotal +=
+        dishDto.quantity * dish.price +
+        createOrderDto.cover_charge * createOrderDto.n_person;
       orderDishes.push(await this.orderDishRepository.save(orderDishCreate));
     }
 
@@ -84,10 +84,19 @@ export class OrdersService {
     };
   }
 
-  async getAllOrder(): Promise<ResponseOrderDto[]> {
-    const orders = await this.orderRepository.find({
+  async getAllOrder(state?: State): Promise<ResponseOrderDto[]> {
+
+    const query: any ={
       relations: ['user', 'order_dishes', 'order_dishes.dish'],
-    });
+    };
+
+    if(state){
+      query.where = {
+        state: state
+      }
+    }
+
+    const orders = await this.orderRepository.find(query)
 
     return orders.map((order) => ({
       id_order: order.id,
@@ -112,59 +121,59 @@ export class OrdersService {
     }));
   }
 
-  async getOrderByTableNumber(n_table): Promise<ResponseOrderDto[]>{
+  async getOrderByTableNumber(n_table): Promise<ResponseOrderDto[]> {
     const orders = await this.orderRepository.find({
       where: {
         n_table: n_table,
-        state: State.PREPARATION
+        state: State.PREPARATION,
       },
-      relations: ["user", "order_dishes", "order_dishes.dish"]
-    })
+      relations: ['user', 'order_dishes', 'order_dishes.dish'],
+    });
 
-    if(orders.length === 0){
-      throw new NotFoundException("No orders found for this table")
+    if (orders.length === 0) {
+      throw new NotFoundException('No orders found for this table');
     }
 
-    return orders.map(order=>({
+    return orders.map((order) => ({
       id_order: order.id,
       n_person: order.n_person,
       n_table: order.n_table,
       state: order.state,
       notes: order.notes,
       date: order.date,
-      dishes: order.order_dishes.map((orderDish)=>({
+      dishes: order.order_dishes.map((orderDish) => ({
         id_dish: orderDish.dish.id,
         name: orderDish.dish.name,
         description: orderDish.dish.description,
         single_price: orderDish.dish.price,
-        quantity: orderDish.quantity
+        quantity: orderDish.quantity,
       })),
       cover_charge: order.cover_charge,
       price_total: order.price_total,
       user: {
         username: order.user.username,
-        role: order.user.role
-      }
-    }))
+        role: order.user.role,
+      },
+    }));
 
-  // return {
-  //     id_order: id_order,
-  //     n_person: order.n_person,
-  //     n_table: order.n_table,
-  //     state: order.state,
-  //     dishes: order.order_dishes.map((orderDish) => ({
-  //       id_dish: id_dish,
-  //       name: orderDish.dish.name,
-  //       description: orderDish.dish.description,
-  //       single_price: orderDish.dish.price,
-  //       quantity: quantity,
-  //     })),
-  //     price_total: new_price_total,
-  //     user: {
-  //       username: order.user.username,
-  //       role: order.user.role,
-  //     },
-  //   };
+    // return {
+    //     id_order: id_order,
+    //     n_person: order.n_person,
+    //     n_table: order.n_table,
+    //     state: order.state,
+    //     dishes: order.order_dishes.map((orderDish) => ({
+    //       id_dish: id_dish,
+    //       name: orderDish.dish.name,
+    //       description: orderDish.dish.description,
+    //       single_price: orderDish.dish.price,
+    //       quantity: quantity,
+    //     })),
+    //     price_total: new_price_total,
+    //     user: {
+    //       username: order.user.username,
+    //       role: order.user.role,
+    //     },
+    //   };
   }
 
   async updateOrder(
@@ -270,12 +279,11 @@ export class OrdersService {
     };
   }
 
-  async deleteOrder(id: number): Promise<responseDeleteDto>{
+  async deleteOrder(id: number): Promise<responseDeleteDto> {
+    const deleteOrder = await this.orderRepository.delete(id);
 
-    const deleteOrder = await this.orderRepository.delete(id)
-
-    if(deleteOrder.affected === 0){
-      throw new NotFoundException("No order found")
+    if (deleteOrder.affected === 0) {
+      throw new NotFoundException('No order found');
     }
 
     return {
@@ -284,5 +292,4 @@ export class OrdersService {
       statusCode: 200,
     };
   }
-
 }
