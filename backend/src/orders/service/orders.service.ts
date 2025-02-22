@@ -85,18 +85,17 @@ export class OrdersService {
   }
 
   async getAllOrder(state?: State): Promise<ResponseOrderDto[]> {
-
-    const query: any ={
+    const query: any = {
       relations: ['user', 'order_dishes', 'order_dishes.dish'],
     };
 
-    if(state){
+    if (state) {
       query.where = {
-        state: state
-      }
+        state: state,
+      };
     }
 
-    const orders = await this.orderRepository.find(query)
+    const orders = await this.orderRepository.find(query);
 
     return orders.map((order) => ({
       id_order: order.id,
@@ -121,7 +120,7 @@ export class OrdersService {
     }));
   }
 
-  async getOrderByTableNumber(n_table): Promise<ResponseOrderDto[]> {
+  async getOrderByTableNumber(n_table: number): Promise<ResponseOrderDto[]> {
     const orders = await this.orderRepository.find({
       where: {
         n_table: n_table,
@@ -291,5 +290,33 @@ export class OrdersService {
       error: null,
       statusCode: 200,
     };
+  }
+
+  async getDailyStats() {
+    const currentDay = new Date().getDate();
+
+    const query = this.orderRepository
+      .createQueryBuilder('o')
+      .select('COUNT(o.id)', 'total_orders')
+      .addSelect('SUM(o.price_total)', 'earnings')
+      .where(`DAY(o.date) = :currentDay`, { currentDay });
+
+    const orders = await query.getRawMany();
+
+    return orders;
+  }
+
+  async getMonthlyStats() {
+    const currentMonth = new Date().getMonth() + 1;
+
+    const query = this.orderRepository
+      .createQueryBuilder('o')
+      .select("COUNT(o.id)", "total_orders")
+      .addSelect("SUM(o.price_total)", "earnings")
+      .where("MONTH(o.date) = :currentMonth", { currentMonth });
+
+    const orders = await query.getRawMany()
+
+    return orders;
   }
 }

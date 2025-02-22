@@ -91,4 +91,17 @@ export class OrdersController {
   ): Promise<responseDeleteDto> {
     return this.ordersService.deleteOrder(id);
   }
+
+  // Get daily stats
+  @Get("stats/daily")
+  async getDailyStats(){
+    return this.ordersService.getDailyStats()
+  }
+
+  // Get monthly stats
+  @Get("stats/monthly")
+  async getMonthlyStats(){
+    return this.ordersService.getMonthlyStats()
+  }
+
 }
