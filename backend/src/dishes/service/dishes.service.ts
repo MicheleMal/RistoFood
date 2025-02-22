@@ -29,6 +29,8 @@ export class DishesService {
     category?: Category,
     min_price?: number,
     max_price?: number,
+    page?: number,
+    limit?: number
   ): Promise<Dish[]> {
     const query = this.dishRepository
       .createQueryBuilder('dish')
@@ -48,9 +50,17 @@ export class DishesService {
       );
     }
 
-    const allDishes = await query.getMany();
+    if(page && limit){
 
+      const skip = (page-1)*limit
+      
+      query.limit(limit).offset(skip)
+    }
+    
+    const allDishes = await query.getMany();
+    
     return allDishes;
+    
   }
 
   async updateDish(id: number, updateDishDto: UpdateDishDto): Promise<ResponseDishDto> {

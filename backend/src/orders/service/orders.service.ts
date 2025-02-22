@@ -84,18 +84,23 @@ export class OrdersService {
     };
   }
 
-  async getAllOrder(state?: State): Promise<ResponseOrderDto[]> {
-    const query: any = {
-      relations: ['user', 'order_dishes', 'order_dishes.dish'],
-    };
+  async getAllOrder(state?: State, page?: number, limit?: number): Promise<ResponseOrderDto[]> {
+    
+    const query = this.orderRepository
+    .createQueryBuilder("o")
+    .innerJoinAndSelect("o.user", "u")
+    .innerJoinAndSelect("o.order_dishes", "od")
+    .innerJoinAndSelect("od.dish", "d")
 
-    if (state) {
-      query.where = {
-        state: state,
-      };
+    if(state){
+      query.where("o.state = :state", {state})
     }
 
-    const orders = await this.orderRepository.find(query);
+    if(page && limit){
+      query.limit(limit).offset((page-1)*limit)
+    }
+
+    const orders = await query.getMany()
 
     return orders.map((order) => ({
       id_order: order.id,
@@ -127,7 +132,7 @@ export class OrdersService {
         state: State.PREPARATION,
       },
       relations: ['user', 'order_dishes', 'order_dishes.dish'],
-    });
+     });
 
     if (orders.length === 0) {
       throw new NotFoundException('No orders found for this table');

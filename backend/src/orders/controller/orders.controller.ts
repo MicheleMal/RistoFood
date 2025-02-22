@@ -40,13 +40,15 @@ export class OrdersController {
   }
 
   // Get all order
-  @Get()
+  @Get('all')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
   async getAllOrder(
     @Query('s') state?: State,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ): Promise<ResponseOrderDto[]> {
-    return this.ordersService.getAllOrder(state);
+    return this.ordersService.getAllOrder(state, page, limit);
   }
 
   // Get orders by table number
@@ -94,12 +96,16 @@ export class OrdersController {
 
   // Get daily stats
   @Get("stats/daily")
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   async getDailyStats(){
     return this.ordersService.getDailyStats()
   }
 
   // Get monthly stats
   @Get("stats/monthly")
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   async getMonthlyStats(){
     return this.ordersService.getMonthlyStats()
   }

@@ -34,8 +34,10 @@ export class DishesController {
     @Query('c') category?: Category,
     @Query('min_p') min_price?: number,
     @Query('max_p') max_price?: number,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ): Promise<Dish[]> {
-    return this.dishesService.getAllDishes(category, min_price, max_price);
+    return this.dishesService.getAllDishes(category, min_price, max_price, page, limit);
   }
 
   // Insert new dish
