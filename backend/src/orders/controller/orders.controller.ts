@@ -110,4 +110,18 @@ export class OrdersController {
     return this.ordersService.getMonthlyStats()
   }
 
+  // Get annual stats
+  @Get("stats/annual")
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async getAnnualStats(){
+    return this.ordersService.getAnnualStats()
+  }
+
+  @Get("stats/top-dishes")
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async rankingOrdersDishes(@Query("top") top?: number){
+    return this.ordersService.rankingOrdersDishes(top)
+  }
 }

@@ -84,23 +84,26 @@ export class OrdersService {
     };
   }
 
-  async getAllOrder(state?: State, page?: number, limit?: number): Promise<ResponseOrderDto[]> {
-    
+  async getAllOrder(
+    state?: State,
+    page?: number,
+    limit?: number,
+  ): Promise<ResponseOrderDto[]> {
     const query = this.orderRepository
-    .createQueryBuilder("o")
-    .innerJoinAndSelect("o.user", "u")
-    .innerJoinAndSelect("o.order_dishes", "od")
-    .innerJoinAndSelect("od.dish", "d")
+      .createQueryBuilder('o')
+      .innerJoinAndSelect('o.user', 'u')
+      .innerJoinAndSelect('o.order_dishes', 'od')
+      .innerJoinAndSelect('od.dish', 'd');
 
-    if(state){
-      query.where("o.state = :state", {state})
+    if (state) {
+      query.where('o.state = :state', { state });
     }
 
-    if(page && limit){
-      query.limit(limit).offset((page-1)*limit)
+    if (page && limit) {
+      query.limit(limit).offset((page - 1) * limit);
     }
 
-    const orders = await query.getMany()
+    const orders = await query.getMany();
 
     return orders.map((order) => ({
       id_order: order.id,
@@ -132,7 +135,7 @@ export class OrdersService {
         state: State.PREPARATION,
       },
       relations: ['user', 'order_dishes', 'order_dishes.dish'],
-     });
+    });
 
     if (orders.length === 0) {
       throw new NotFoundException('No orders found for this table');
@@ -159,25 +162,6 @@ export class OrdersService {
         role: order.user.role,
       },
     }));
-
-    // return {
-    //     id_order: id_order,
-    //     n_person: order.n_person,
-    //     n_table: order.n_table,
-    //     state: order.state,
-    //     dishes: order.order_dishes.map((orderDish) => ({
-    //       id_dish: id_dish,
-    //       name: orderDish.dish.name,
-    //       description: orderDish.dish.description,
-    //       single_price: orderDish.dish.price,
-    //       quantity: quantity,
-    //     })),
-    //     price_total: new_price_total,
-    //     user: {
-    //       username: order.user.username,
-    //       role: order.user.role,
-    //     },
-    //   };
   }
 
   async updateOrder(
@@ -312,16 +296,56 @@ export class OrdersService {
   }
 
   async getMonthlyStats() {
-    const currentMonth = new Date().getMonth() + 1;
-
     const query = this.orderRepository
       .createQueryBuilder('o')
-      .select("COUNT(o.id)", "total_orders")
-      .addSelect("SUM(o.price_total)", "earnings")
-      .where("MONTH(o.date) = :currentMonth", { currentMonth });
+      .select('MONTH(o.date)', 'month')
+      .addSelect('COUNT(o.id)', 'total_orders')
+      .addSelect('SUM(o.price_total)', 'earnings')
+      .groupBy('MONTH(o.date)');
+
+    const orders = await query.getRawMany();
+
+    return orders;
+  }
+
+  async getAnnualStats() {
+    const query = this.orderRepository
+      .createQueryBuilder('o')
+      .select('YEAR(o.date)', 'year')
+      .addSelect('COUNT(o.id)', 'total_orders')
+      .addSelect('SUM(o.price_total)', 'earnings')
+      .groupBy('YEAR(o.date)');
+
+    const orders = await query.getRawMany();
+
+    return orders;
+  }
+
+  async rankingOrdersDishes(top?: number){
+    /*
+      SELECT d.name, SUM(od.quantity) as "n_order_dish"
+      FROM order_dish as od
+
+      INNER JOIN dishes as d
+      ON od.id_dish = d.id
+
+      GROUP BY od.id_dish
+      ORDER BY "n_order_dish"
+    */
+
+    const query = this.orderDishRepository
+      .createQueryBuilder("od")
+      .addSelect("SUM(od.quantity)", "n_order_dish")
+      .innerJoinAndSelect("od.dish", "d")
+      .groupBy("od.dish")
+      .orderBy("n_order_dish", "DESC")
+    
+    if(top){
+      query.limit(top)
+    }
 
     const orders = await query.getRawMany()
 
-    return orders;
+    return orders
   }
 }
