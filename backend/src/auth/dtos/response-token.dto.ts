@@ -1,14 +1,20 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class ResponseTokenDto{
-    
-    @IsString()
-    @IsOptional()
-    @IsNotEmpty()
-    access_token?: string
+export class ResponseTokenDto {
+  @ApiPropertyOptional({
+    description: 'Token for authentication',
+  })
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  access_token?: string;
 
-    @IsString()
-    @IsOptional()
-    @IsNotEmpty()
-    refresh_token?: string
+  @ApiPropertyOptional({
+    description: 'Refresh token',
+  })
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  refresh_token?: string;
 }

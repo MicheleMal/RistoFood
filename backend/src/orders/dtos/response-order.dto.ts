@@ -36,12 +36,12 @@ export class ResponseOrderDto {
 
   @IsString()
   @IsNotEmpty()
-  notes: string
+  notes: string;
 
   @IsNotEmpty()
-  @Type(()=>Date)
+  @Type(() => Date)
   @IsDate()
-  date: Date
+  date: Date;
 
   @ArrayNotEmpty()
   @IsNotEmpty()
@@ -52,7 +52,7 @@ export class ResponseOrderDto {
 
   @IsNumber()
   @IsNotEmpty()
-  cover_charge: number
+  cover_charge: number;
 
   @IsNumber()
   @IsNotEmpty()

@@ -171,7 +171,7 @@ export class OrdersService {
     const updateOrder = await this.orderRepository.update(id, updateOrderDto);
 
     if (updateOrder.affected === 0) {
-      throw new NotFoundException('No dish found');
+      throw new NotFoundException('No order found');
     }
 
     const order = await this.orderRepository.findOne({
@@ -322,16 +322,6 @@ export class OrdersService {
   }
 
   async rankingOrdersDishes(top?: number){
-    /*
-      SELECT d.name, SUM(od.quantity) as "n_order_dish"
-      FROM order_dish as od
-
-      INNER JOIN dishes as d
-      ON od.id_dish = d.id
-
-      GROUP BY od.id_dish
-      ORDER BY "n_order_dish"
-    */
 
     const query = this.orderDishRepository
       .createQueryBuilder("od")

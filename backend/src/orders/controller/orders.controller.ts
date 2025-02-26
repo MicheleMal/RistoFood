@@ -23,13 +23,19 @@ import { ResponseOrderDto } from '../dtos/response-order.dto';
 import { UpdateOrderDto } from '../dtos/update-order.dto';
 import { responseDeleteDto } from 'src/dto/response-delete.dto';
 import { State } from 'src/enums/states.enum';
+import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   // Insert new order
   @Post('insert')
+  @ApiResponse({
+    status: 201,
+    description: "New order created"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
   async insertNewDish(
@@ -41,6 +47,13 @@ export class OrdersController {
 
   // Get all order
   @Get('all')
+  @ApiResponse({
+    status: 200,
+    description: "List of all orders"
+  })
+  @ApiQuery({name: "s", description: "State order", required: false, enum: State})
+  @ApiQuery({name: "page", description: "Page number for pagination", required: false })
+  @ApiQuery({name: "limit", description: "", required: false})
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
   async getAllOrder(
@@ -53,6 +66,14 @@ export class OrdersController {
 
   // Get orders by table number
   @Get('/table/:n_table')
+  @ApiResponse({
+    status: 200,
+    description: "List of all orders for a specific table"
+  })
+  @ApiResponse({
+    status: 404,
+    description: "No orders found"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
   async getOrderByTableNumber(
@@ -63,6 +84,14 @@ export class OrdersController {
 
   // Update order (n_person, n_table, state)
   @Patch('update/:id')
+  @ApiResponse({
+    status: 200,
+    description: "Order successfully modified"
+  })
+  @ApiResponse({
+    status: 404,
+    description: "No order found"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
   async updateOrder(
@@ -74,6 +103,14 @@ export class OrdersController {
 
   // Update order dish
   @Put('update/:id/dish/:id_dish')
+  @ApiResponse({
+    status: 200,
+    description: "Order successfully modified"
+  })
+  @ApiResponse({
+    status: 404,
+    description: "No dish or order found"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
   async updateOrderDish(
@@ -86,6 +123,14 @@ export class OrdersController {
 
   // Delete order
   @Delete('delete/:id')
+  @ApiResponse({
+    status: 200,
+    description: "Dish deleted successfully"
+  })
+  @ApiResponse({
+    status: 404,
+    description: "No order found"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.STAFF, Role.ADMIN)
   async deleteOrder(
@@ -96,6 +141,10 @@ export class OrdersController {
 
   // Get daily stats
   @Get("stats/daily")
+  @ApiResponse({
+    status: 200,
+    description: "List of daily statistics"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async getDailyStats(){
@@ -104,6 +153,10 @@ export class OrdersController {
 
   // Get monthly stats
   @Get("stats/monthly")
+  @ApiResponse({
+    status: 200,
+    description: "List of monthly statistics"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async getMonthlyStats(){
@@ -112,6 +165,10 @@ export class OrdersController {
 
   // Get annual stats
   @Get("stats/annual")
+  @ApiResponse({
+    status: 200,
+    description: "List of annual statistics"
+  })
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async getAnnualStats(){
@@ -119,6 +176,11 @@ export class OrdersController {
   }
 
   @Get("stats/top-dishes")
+  @ApiResponse({
+    status: 200,
+    description: "Ranking of the most ordered dishes"
+  })
+  @ApiQuery({name: "top", description: "Top of the dishes to show", required: false})
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async rankingOrdersDishes(@Query("top") top?: number){

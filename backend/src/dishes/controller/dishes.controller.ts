@@ -23,13 +23,28 @@ import { Role } from 'src/enums/roles.enum';
 import { AuthGuard } from 'src/auth/guards/auth/auth.guard';
 import { ResponseDishDto } from '../dtos/response-dish.dto';
 import { responseDeleteDto } from 'src/dto/response-delete.dto';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags("Menu")
 @Controller('menu')
 export class DishesController {
   constructor(private readonly dishesService: DishesService) {}
 
   // Get all dishes
   @Get('all')
+  @ApiResponse({
+    status: 200,
+    description: "List of all dishes on the menu"
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Invalid price range"
+  })
+  @ApiQuery({name: "c", description: "Category dish", required: false, enum: Category})
+  @ApiQuery({name: "min_p", description: "Minimum price", required: false})
+  @ApiQuery({name: "max_p", description: "Maximun price", required: false})
+  @ApiQuery({name: "page", description: "Page number for pagination", required: false })
+  @ApiQuery({name: "limit", description: "", required: false})
   async getAllDishes(
     @Query('c') category?: Category,
     @Query('min_p') min_price?: number,
@@ -42,6 +57,11 @@ export class DishesController {
 
   // Insert new dish
   @Post('insert')
+  @ApiResponse({
+    status: 201,
+    description: "New dish created successfully"
+  })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async insertNewDish(
@@ -52,6 +72,15 @@ export class DishesController {
 
   // Update dish
   @Patch('update/:id')
+  @ApiResponse({
+    status: 200,
+    description: "Dish updated successfully"
+  })
+  @ApiResponse({
+    status: 404,
+    description: "No dish found"
+  })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async updateDish(
@@ -62,6 +91,15 @@ export class DishesController {
   }
 
   @Delete('delete/:id')
+  @ApiResponse({
+    status: 200,
+    description: "Dish deleted successfully"
+  })
+  @ApiResponse({
+    status: 404,
+    description: "No dish found"
+  })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
   async deleteDish(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto> {

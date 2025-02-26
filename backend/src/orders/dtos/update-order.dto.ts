@@ -1,25 +1,37 @@
-import { ArrayNotEmpty, IsEnum, IsNotEmpty, IsNumber, IsOptional, ValidateNested } from "class-validator";
-import { OrderDishDto } from "./order-dish.dto";
-import { Type } from "class-transformer";
-import { State } from "src/enums/states.enum";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { State } from 'src/enums/states.enum';
+import { ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 
-export class UpdateOrderDto{
-    
-    @IsOptional()
-    @IsNotEmpty()
-    @IsNumber()
-    n_person?: number
+@ApiSchema({
+  name: "UpdateOrder"
+})
+export class UpdateOrderDto {
+  @ApiPropertyOptional({
+    description: 'Number person at the table',
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
+  n_person?: number;
 
-    @IsOptional()
-    @IsNotEmpty()
-    @IsNumber()
-    n_table?: number
+  @ApiPropertyOptional({
+    description: 'Table number',
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
+  n_table?: number;
 
-    @IsOptional()
-    @IsNotEmpty()
-    @IsEnum(State,{
-        message: 'You must enter a role between admin and staff',
-    })
-    state?: State
-
+  @ApiPropertyOptional({
+    description: 'Order status',
+    enum: State,
+    default: State.WAIT,
+    example: State.WAIT,
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(State, {
+    message: 'You must enter a role between admin and staff',
+  })
+  state?: State;
 }

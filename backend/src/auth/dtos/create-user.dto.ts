@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
@@ -9,17 +9,31 @@ import {
 } from 'class-validator';
 import { Role } from 'src/enums/roles.enum';
 
+@ApiSchema({
+  name: "CreateUser"
+})
 export class CreateUserDto {
+
+  @ApiProperty({
+    description: "Username for profile",
+  })
   @IsString({
     message: 'Enter a string format',
   })
   @IsNotEmpty()
   username: string;
 
+  @ApiProperty({
+    description: "Personal email to access the profile"
+  })
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
+  @ApiProperty({
+    description: "Password to access the profile",
+    minLength: 8,
+  })
   @IsString({
     message: 'Enter a string format',
   })
@@ -29,6 +43,11 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
+  @ApiPropertyOptional({
+    description: "Role",
+    enum: Role,
+    default: Role.STAFF,
+  })
   @IsOptional()
   @IsEnum(Role, {
     message: 'You must enter a role between admin and staff',
@@ -36,6 +55,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   role?: Role;
 
+  @ApiPropertyOptional({
+    description: "Refresh token"
+  })
   @IsString({
     message: 'Enter a string format',
   })

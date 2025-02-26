@@ -1,3 +1,4 @@
+import { ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 import {
   IsEnum,
   IsNotEmpty,
@@ -7,7 +8,14 @@ import {
 } from 'class-validator';
 import { Role } from 'src/enums/roles.enum';
 
+@ApiSchema({
+  name: "UpdateUser"
+})
 export class UpdateUserDto {
+
+  @ApiPropertyOptional({
+    description: "Username"
+  })
   @IsString({
     message: 'Enter a string format',
   })
@@ -15,6 +23,9 @@ export class UpdateUserDto {
   @IsOptional()
   username?: string;
 
+  @ApiPropertyOptional({
+    description: "Password"
+  })
   @IsString({
     message: 'Enter a string format',
   })
@@ -25,6 +36,10 @@ export class UpdateUserDto {
   @IsOptional()
   password?: string;
 
+  @ApiPropertyOptional({
+    description: "Role",
+    enum: Role
+  })
   @IsEnum(Role, {
     message: 'You must enter a role between admin and staff',
   })

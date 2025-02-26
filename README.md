@@ -22,7 +22,7 @@ L'Admin ha il controllo completo sul sistema. Le sue funzionalità includono:
   - Visualizzare gli ordini con stato "preparation" di un determinato tavolo.
   - Creare nuovi ordini.
   - Modificare lo stato degli ordini (ad esempio, da "in attesa" a "completato"), il numero del tavolo e delle persone.
-  - Modificare i piatti all'interno di un ordine.
+  - Modificare i piatti all'interno di un ordine. 
   - Eliminare ordini.
 
 - **Statistiche**:
@@ -95,6 +95,12 @@ Il sistema di autenticazione si basa su **JWT (JSON Web Token)**, con supporto p
 - **GET /users/profile**: Visualizza le informazioni del profilo dell'utente (username, password, ruolo).
 - **PATCH /users/update**: Modifica il proprio profilo (username, password, ruolo).
 - **DELETE /users/delete**: Elimina il proprio profilo.
+
+## Documentazione API
+La documentazione completa delle API è disponibile tramite **Swagger** all'indirizzo locale:
+```bash
+  localhost:3000/api
+```
 
 ## Tecnologie utilizzate
 
