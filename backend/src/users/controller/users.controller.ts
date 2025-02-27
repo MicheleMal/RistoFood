@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Patch,
+  Put,
   Request,
   UseGuards,
   ValidationPipe,
@@ -12,10 +13,12 @@ import { UsersService } from '../service/users.service';
 import { AuthGuard } from '../../auth/guards/auth/auth.guard';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UserProfileDto } from '../dtos/user-profile.dto';
-import { ResponseUpdateUserDto } from '../dtos/response-update-user.dto';
+import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { ResponseUserUpdateDeleteDto } from '../dtos/response-user.dto';
+import { Role } from 'src/enums/roles.enum';
 import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
-import { responseDeleteDto } from 'src/dto/response-delete.dto';
-import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { UpdateRoleDto } from '../dtos/update-role.dto';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -25,12 +28,10 @@ export class UsersController {
   // Get the user authenticated
   @UseGuards(AuthGuard)
   @Get('profile')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "Personal profile"
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: "No user found"
   })
   async getProfile(@Request() req: Request): Promise<UserProfileDto> {
@@ -40,35 +41,44 @@ export class UsersController {
   // Edit authenticated user information
   @UseGuards(AuthGuard)
   @Patch('update')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "User updated successfully"
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: "No user found"
   })
   async updateUser(
     @Request() req: Request,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-  ): Promise<ResponseUpdateUserDto> {
+  ): Promise<ResponseUserUpdateDeleteDto> {
     return this.usersService.updateUser(req, updateUserDto);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @Put('update/role')
+  @ApiOkResponse({
+    description: "User updated successfully"
+  })
+  @ApiNotFoundResponse({
+    description: "No user found"
+  })
+  async updateRole(@Body(ValidationPipe) updateRoleDto: UpdateRoleDto): Promise<ResponseUserUpdateDeleteDto>{
+    return this.usersService.updateRole(updateRoleDto)
   }
 
   // Delete authenticated user
   @UseGuards(AuthGuard)
   @Delete('delete')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "User deleted successfully"
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: "No user found"
   })
   async deleteUser(
     @Request() req: Request,
-  ): Promise<responseDeleteDto> {
+  ): Promise<ResponseUserUpdateDeleteDto> {
     return this.usersService.deleteUser(req);
   }
 }

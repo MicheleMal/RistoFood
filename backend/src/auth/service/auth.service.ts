@@ -40,7 +40,7 @@ export class AuthService {
     } catch (error) {
       if (error instanceof QueryFailedError) {
         if (error['code'] === 'ER_DUP_ENTRY') {
-          throw new ConflictException('Email already registered');
+          throw new ConflictException('Email or username already registered');
         }
       }
     }

@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
-import { IsNull } from "typeorm"
 
-export class responseDeleteDto{
+export class ResponseDeleteDto{
 
     @IsString()
     @IsNotEmpty()

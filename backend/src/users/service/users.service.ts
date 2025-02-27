@@ -4,9 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserProfileDto } from '../dtos/user-profile.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
-import * as bcrypt from "bcrypt"
-import { ResponseUpdateUserDto } from '../dtos/response-update-user.dto';
-import { responseDeleteDto } from 'src/dto/response-delete.dto';
+import * as bcrypt from 'bcrypt';
+import { Role } from 'src/enums/roles.enum';
+import { ResponseUserUpdateDeleteDto } from '../dtos/response-user.dto';
+import { UpdateRoleDto } from '../dtos/update-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -38,12 +39,12 @@ export class UsersService {
   async updateUser(
     req: Request,
     updateUserDto: UpdateUserDto,
-  ): Promise<ResponseUpdateUserDto> {
+  ): Promise<ResponseUserUpdateDeleteDto> {
     const { user_id } = req['user'];
 
-    if(updateUserDto.password){
-        const salt = await bcrypt.genSalt()
-        updateUserDto.password = await bcrypt.hash(updateUserDto.password, salt)
+    if (updateUserDto.password) {
+      const salt = await bcrypt.genSalt();
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, salt);
     }
 
     const updateUser = await this.userRepository.update(user_id, updateUserDto);
@@ -56,7 +57,7 @@ export class UsersService {
       where: {
         id: user_id,
       },
-      select: ["username", "role"]
+      select: ['username', 'role'],
     });
 
     return {
@@ -67,18 +68,39 @@ export class UsersService {
     };
   }
 
-  async deleteUser(req: Request): Promise<responseDeleteDto>{
-    const {user_id} = req["user"]
-    const deletedUser = await this.userRepository.delete(user_id)
+  async updateRole(updateRoleDto: UpdateRoleDto): Promise<ResponseUserUpdateDeleteDto> {
+    const updateUserRole = await this.userRepository.update(
+      {
+        username: updateRoleDto.username,
+      },
+      {
+        role: updateRoleDto.role,
+      },
+    );
 
-    if(deletedUser.affected === 0){
-        throw new NotFoundException("No user found")
+    if(updateUserRole.affected === 0){
+      throw new NotFoundException(`No user found with the ${updateRoleDto.username}`)
     }
 
     return {
-        message: "User deleted successfully",
-        error: null,
-        statusCode: 200,
+      message: "Role successfully changed",
+      error: null,
+      statusCode: 200,
     }
+  }
+
+  async deleteUser(req: Request): Promise<ResponseUserUpdateDeleteDto> {
+    const { user_id } = req['user'];
+    const deletedUser = await this.userRepository.delete(user_id);
+
+    if (deletedUser.affected === 0) {
+      throw new NotFoundException('No user found');
+    }
+
+    return {
+      message: 'User deleted successfully',
+      error: null,
+      statusCode: 200,
+    };
   }
 }

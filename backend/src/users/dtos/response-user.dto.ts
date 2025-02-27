@@ -9,7 +9,7 @@ import {
 import { User } from '../user.entity';
 import { Type } from 'class-transformer';
 
-export class ResponseUpdateUserDto {
+export class ResponseUserUpdateDeleteDto {
   @IsString()
   @IsNotEmpty()
   message: string;
@@ -26,5 +26,5 @@ export class ResponseUpdateUserDto {
   @IsNotEmpty()
   @ValidateNested()
   @Type(() => User)
-  data: User;
+  data?: User;
 }

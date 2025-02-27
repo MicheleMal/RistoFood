@@ -11,7 +11,7 @@ import { CreateDishDto } from '../dtos/create-dish.dto';
 import { Category } from 'src/enums/categories.enum';
 import { UpdateDishDto } from '../dtos/update-dish.dto';
 import { ResponseDishDto } from '../dtos/response-dish.dto';
-import { responseDeleteDto } from 'src/dto/response-delete.dto';
+import { ResponseDeleteDto } from 'src/dto/response-delete.dto';
 
 @Injectable()
 export class DishesService {
@@ -79,7 +79,7 @@ export class DishesService {
     return dish
   }
 
-  async deleteDish(id: number): Promise<responseDeleteDto> {
+  async deleteDish(id: number): Promise<ResponseDeleteDto> {
     const deleteDish = await this.dishRepository.delete(id);
 
     if (deleteDish.affected === 0) {

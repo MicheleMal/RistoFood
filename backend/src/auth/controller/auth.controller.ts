@@ -5,7 +5,7 @@ import { LoginUserDto } from '../dtos/login-user.dto';
 import { ResponseUserDto } from '../dtos/response-user.dto';
 import { AuthGuard } from '../guards/auth/auth.guard';
 import { ResponseTokenDto } from '../dtos/response-token.dto';
-import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -13,12 +13,10 @@ export class AuthController {
 
   // Register a new user
   @Post('register')
-  @ApiResponse({
-    status: 201,
+  @ApiOkResponse({
     description: "User registered successfully"
   })
-  @ApiResponse({
-    status: 409,
+  @ApiConflictResponse({
     description: "Email already registered"
   })
   async register(
@@ -29,12 +27,10 @@ export class AuthController {
 
   // Login user
   @Post('login')
-  @ApiResponse({
-    status: 200,
+  @ApiCreatedResponse({
     description: "Login successfully"
   })
-  @ApiResponse({
-    status: 401,
+  @ApiUnauthorizedResponse({
     description: "Incorrect email or password"
   })
   async login(
@@ -44,12 +40,10 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "Refresh token"
   })
-  @ApiResponse({
-    status: 401,
+  @ApiUnauthorizedResponse({
     description: "Incorrect email or password"
   })
   async refresh(@Body('token') token: string, @Body('id') id: number): Promise<ResponseTokenDto>{
@@ -57,8 +51,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "Successfully logout"
   })
   @ApiBearerAuth()

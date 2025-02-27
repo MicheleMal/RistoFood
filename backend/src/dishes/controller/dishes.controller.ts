@@ -22,8 +22,8 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/enums/roles.enum';
 import { AuthGuard } from 'src/auth/guards/auth/auth.guard';
 import { ResponseDishDto } from '../dtos/response-dish.dto';
-import { responseDeleteDto } from 'src/dto/response-delete.dto';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ResponseDeleteDto } from 'src/dto/response-delete.dto';
 
 @ApiTags("Menu")
 @Controller('menu')
@@ -32,12 +32,10 @@ export class DishesController {
 
   // Get all dishes
   @Get('all')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "List of all dishes on the menu"
   })
-  @ApiResponse({
-    status: 400,
+  @ApiBadRequestResponse({
     description: "Invalid price range"
   })
   @ApiQuery({name: "c", description: "Category dish", required: false, enum: Category})
@@ -57,8 +55,7 @@ export class DishesController {
 
   // Insert new dish
   @Post('insert')
-  @ApiResponse({
-    status: 201,
+  @ApiOkResponse({
     description: "New dish created successfully"
   })
   @ApiBearerAuth()
@@ -72,12 +69,10 @@ export class DishesController {
 
   // Update dish
   @Patch('update/:id')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "Dish updated successfully"
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: "No dish found"
   })
   @ApiBearerAuth()
@@ -91,18 +86,16 @@ export class DishesController {
   }
 
   @Delete('delete/:id')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: "Dish deleted successfully"
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: "No dish found"
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
-  async deleteDish(@Param('id', ParseIntPipe) id: number): Promise<responseDeleteDto> {
+  async deleteDish(@Param('id', ParseIntPipe) id: number): Promise<ResponseDeleteDto> {
     return this.dishesService.deleteDish(id);
   }
 }

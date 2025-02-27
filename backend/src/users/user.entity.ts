@@ -9,6 +9,7 @@ export class User {
 
   @Column({
     type: 'varchar',
+    unique: true
   })
   username: string;
 

@@ -6,7 +6,6 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { Role } from 'src/enums/roles.enum';
 
 @ApiSchema({
   name: "UpdateUser"
@@ -35,15 +34,4 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @IsOptional()
   password?: string;
-
-  @ApiPropertyOptional({
-    description: "Role",
-    enum: Role
-  })
-  @IsEnum(Role, {
-    message: 'You must enter a role between admin and staff',
-  })
-  @IsNotEmpty()
-  @IsOptional()
-  role?: Role;
 }
