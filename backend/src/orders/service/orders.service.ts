@@ -123,7 +123,6 @@ export class OrdersService {
       price_total: order.price_total,
       user: {
         username: order.user.username,
-        role: order.user.role,
       },
     }));
   }
@@ -159,7 +158,6 @@ export class OrdersService {
       price_total: order.price_total,
       user: {
         username: order.user.username,
-        role: order.user.role,
       },
     }));
   }
@@ -199,7 +197,6 @@ export class OrdersService {
       price_total: order.price_total,
       user: {
         username: order.user.username,
-        role: order.user.role,
       },
     };
   }
@@ -262,7 +259,6 @@ export class OrdersService {
       cover_charge: order.cover_charge,
       user: {
         username: order.user.username,
-        role: order.user.role,
       },
     };
   }

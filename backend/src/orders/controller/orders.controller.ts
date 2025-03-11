@@ -36,7 +36,7 @@ export class OrdersController {
     description: "New order created"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.STAFF, Role.ADMIN)
+  @Roles(Role.STAFF, Role.OWNER)
   async insertNewDish(
     @Body(ValidationPipe) createOrderDto: CreateOrderDto,
     @Request() req: Request,
@@ -53,7 +53,7 @@ export class OrdersController {
   @ApiQuery({name: "page", description: "Page number for pagination", required: false })
   @ApiQuery({name: "limit", description: "", required: false})
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.STAFF, Role.ADMIN)
+  @Roles(Role.STAFF, Role.OWNER)
   async getAllOrder(
     @Query('s') state?: State,
     @Query('page') page?: number,
@@ -71,7 +71,7 @@ export class OrdersController {
     description: "No orders found"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.STAFF, Role.ADMIN)
+  @Roles(Role.STAFF, Role.OWNER)
   async getOrderByTableNumber(
     @Param('n_table', ParseIntPipe) n_table: number,
   ): Promise<ResponseOrderDto[]> {
@@ -87,7 +87,7 @@ export class OrdersController {
     description: "No order found"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.STAFF, Role.ADMIN)
+  @Roles(Role.STAFF, Role.OWNER)
   async updateOrder(
     @Body(ValidationPipe) updateOrderDto: UpdateOrderDto,
     @Param('id', ParseIntPipe) id: number,
@@ -104,7 +104,7 @@ export class OrdersController {
     description: "No dish or order found"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.STAFF, Role.ADMIN)
+  @Roles(Role.STAFF, Role.OWNER)
   async updateOrderDish(
     @Param('id', ParseIntPipe) id: number,
     @Param('id_dish', ParseIntPipe) id_dish: number,
@@ -122,7 +122,7 @@ export class OrdersController {
     description: "No order found"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.STAFF, Role.ADMIN)
+  @Roles(Role.STAFF, Role.OWNER)
   async deleteOrder(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseDeleteDto> {
@@ -135,7 +135,7 @@ export class OrdersController {
     description: "List of daily statistics"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.OWNER)
   async getDailyStats(){
     return this.ordersService.getDailyStats()
   }
@@ -146,7 +146,7 @@ export class OrdersController {
     description: "List of monthly statistics"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.OWNER)
   async getMonthlyStats(){
     return this.ordersService.getMonthlyStats()
   }
@@ -157,7 +157,7 @@ export class OrdersController {
     description: "List of annual statistics"
   })
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.OWNER)
   async getAnnualStats(){
     return this.ordersService.getAnnualStats()
   }
@@ -168,7 +168,7 @@ export class OrdersController {
   })
   @ApiQuery({name: "top", description: "Top of the dishes to show", required: false})
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.OWNER)
   async rankingOrdersDishes(@Query("top") top?: number){
     return this.ordersService.rankingOrdersDishes(top)
   }

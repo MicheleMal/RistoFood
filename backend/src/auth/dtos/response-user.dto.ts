@@ -11,12 +11,4 @@ export class ResponseUserDto {
   @IsNotEmpty()
   username: string;
 
-  @ApiProperty({
-    description: "Role"
-})
-  @IsEnum(Role, {
-    message: 'You must enter a role between admin and staff',
-  })
-  @IsNotEmpty()
-  role: Role;
 }

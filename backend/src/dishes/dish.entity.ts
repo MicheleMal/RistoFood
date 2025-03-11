@@ -1,8 +1,10 @@
 import { Category } from 'src/enums/categories.enum';
 import { OrderDish } from 'src/orders/order-dish.entity';
+import { Venue } from 'src/venues/venue.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -35,6 +37,10 @@ export class Dish {
     enum: Category,
   })
   category: Category;
+
+  @ManyToOne(()=>Venue, (venue)=>venue.dishes, {nullable: true, onDelete: "CASCADE"})
+  @JoinColumn({name: "id_venue", referencedColumnName: "id"})
+  venue: Venue
 
   @OneToMany(() => OrderDish, (orderDish) => orderDish.dish)
   order_dishes: OrderDish[];

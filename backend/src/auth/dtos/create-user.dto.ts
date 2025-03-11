@@ -44,18 +44,6 @@ export class CreateUserDto {
   password: string;
 
   @ApiPropertyOptional({
-    description: "Role",
-    enum: Role,
-    default: Role.STAFF,
-  })
-  @IsOptional()
-  @IsEnum(Role, {
-    message: 'You must enter a role between admin and staff',
-  })
-  @IsNotEmpty()
-  role?: Role;
-
-  @ApiPropertyOptional({
     description: "Refresh token"
   })
   @IsString({

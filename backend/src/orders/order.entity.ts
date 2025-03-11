@@ -1,6 +1,7 @@
 import { State } from 'src/enums/states.enum';
 import { OrderDish } from 'src/orders/order-dish.entity';
 import { User } from 'src/users/user.entity';
+import { Venue } from 'src/venues/venue.entity';
 import {
   Column,
   Entity,
@@ -63,6 +64,10 @@ export class Order {
   @ManyToOne(() => User, (user) => user.orders, { nullable: false, onDelete: "CASCADE" })
   @JoinColumn({ name: 'id_user', referencedColumnName: 'id' })
   user: User;
+
+  @ManyToOne(()=>Venue, (venue)=>venue.orders, {nullable: true, onDelete: "CASCADE"})
+  @JoinColumn({name: "id_venue", referencedColumnName: "id"})
+  venue: Venue
 
   @OneToMany(() => OrderDish, (orderDish) => orderDish.order)
   order_dishes: OrderDish[];

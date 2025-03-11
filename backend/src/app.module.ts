@@ -12,6 +12,9 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { DishesModule } from './dishes/dishes.module';
 import { OrdersModule } from './orders/orders.module';
+import { Venue } from './venues/venue.entity';
+import { VenueUser } from './venues/venue-user.entity';
+import { VenuesModule } from './venues/venues.module';
 
 @Module({
   imports: [
@@ -26,7 +29,7 @@ import { OrdersModule } from './orders/orders.module';
       username: process.env.USERNAME,
       password: process.env.PASSWORD,
       database: process.env.DATABASE,
-      entities: [User, Order, Dish, OrderDish],
+      entities: [User, Order, Dish, Venue, VenueUser, OrderDish],
       synchronize: true, // true solo in sviluppo (sincronizza automaticamente lo schema)
       charset: 'utf8mb4',
       // logging: true
@@ -41,7 +44,8 @@ import { OrdersModule } from './orders/orders.module';
     AuthModule,
     UsersModule,
     DishesModule,
-    OrdersModule
+    OrdersModule,
+    VenuesModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -60,7 +60,7 @@ export class DishesController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.OWNER)
   async insertNewDish(
     @Body(ValidationPipe) createDishDto: CreateDishDto,
   ): Promise<CreateDishDto> {
@@ -77,7 +77,7 @@ export class DishesController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.OWNER)
   async updateDish(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateDishDto: UpdateDishDto,
@@ -94,7 +94,7 @@ export class DishesController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.OWNER)
   async deleteDish(@Param('id', ParseIntPipe) id: number): Promise<ResponseDeleteDto> {
     return this.dishesService.deleteDish(id);
   }

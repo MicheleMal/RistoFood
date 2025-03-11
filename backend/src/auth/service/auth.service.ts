@@ -35,7 +35,6 @@ export class AuthService {
 
       return {
         username: newUser.username,
-        role: newUser.role,
       };
     } catch (error) {
       if (error instanceof QueryFailedError) {
@@ -65,7 +64,7 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect email or password');
     }
 
-    const accessToken = await this.generateAccessToken(user.id, user.role)
+    const accessToken = await this.generateAccessToken(user.id)
     const refreshToken = await this.generateRefreshToken(user.id)
 
     return {
@@ -93,7 +92,7 @@ export class AuthService {
     }
 
     return {
-      access_token: await this.generateAccessToken(user.id, user.role)
+      access_token: await this.generateAccessToken(user.id)
     }
   }
 
@@ -108,8 +107,8 @@ export class AuthService {
     }
   }
 
-  async generateAccessToken(userId: number, role: Role){
-    const payload = { user_id: userId, role: role };
+  async generateAccessToken(userId: number){
+    const payload = { user_id: userId };
 
     return await this.jwtService.signAsync(payload)
   }

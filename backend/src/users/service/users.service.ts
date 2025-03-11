@@ -57,7 +57,7 @@ export class UsersService {
       where: {
         id: user_id,
       },
-      select: ['username', 'role'],
+      select: ['username'],
     });
 
     return {
@@ -68,26 +68,6 @@ export class UsersService {
     };
   }
 
-  async updateRole(updateRoleDto: UpdateRoleDto): Promise<ResponseUserUpdateDeleteDto> {
-    const updateUserRole = await this.userRepository.update(
-      {
-        username: updateRoleDto.username,
-      },
-      {
-        role: updateRoleDto.role,
-      },
-    );
-
-    if(updateUserRole.affected === 0){
-      throw new NotFoundException(`No user found with the ${updateRoleDto.username}`)
-    }
-
-    return {
-      message: "Role successfully changed",
-      error: null,
-      statusCode: 200,
-    }
-  }
 
   async deleteUser(req: Request): Promise<ResponseUserUpdateDeleteDto> {
     const { user_id } = req['user'];

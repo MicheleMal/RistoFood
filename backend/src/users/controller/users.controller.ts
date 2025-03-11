@@ -39,33 +39,33 @@ export class UsersController {
   }
 
   // Edit authenticated user information
-  @UseGuards(AuthGuard)
-  @Patch('update')
-  @ApiOkResponse({
-    description: "User updated successfully"
-  })
-  @ApiNotFoundResponse({
-    description: "No user found"
-  })
-  async updateUser(
-    @Request() req: Request,
-    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
-  ): Promise<ResponseUserUpdateDeleteDto> {
-    return this.usersService.updateUser(req, updateUserDto);
-  }
+  // @UseGuards(AuthGuard)
+  // @Patch('update')
+  // @ApiOkResponse({
+  //   description: "User updated successfully"
+  // })
+  // @ApiNotFoundResponse({
+  //   description: "No user found"
+  // })
+  // async updateUser(
+  //   @Request() req: Request,
+  //   @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+  // ): Promise<ResponseUserUpdateDeleteDto> {
+  //   return this.usersService.updateUser(req, updateUserDto);
+  // }
 
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  @Put('update/role')
-  @ApiOkResponse({
-    description: "User updated successfully"
-  })
-  @ApiNotFoundResponse({
-    description: "No user found"
-  })
-  async updateRole(@Body(ValidationPipe) updateRoleDto: UpdateRoleDto): Promise<ResponseUserUpdateDeleteDto>{
-    return this.usersService.updateRole(updateRoleDto)
-  }
+  // @UseGuards(AuthGuard, RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @Put('update/role')
+  // @ApiOkResponse({
+  //   description: "User updated successfully"
+  // })
+  // @ApiNotFoundResponse({
+  //   description: "No user found"
+  // })
+  // async updateRole(@Body(ValidationPipe) updateRoleDto: UpdateRoleDto): Promise<ResponseUserUpdateDeleteDto>{
+  //   return this.usersService.updateRole(updateRoleDto)
+  // }
 
   // Delete authenticated user
   @UseGuards(AuthGuard)
