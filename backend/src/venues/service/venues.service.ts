@@ -90,17 +90,23 @@ export class VenuesService {
         }
     }
 
-    async getVenueById(id: number){
+    async getVenueById(id: number): Promise<ResponseVenueDto>{
         const venue = await this.venueRepository.findOne({
             where: {
                 id: id
             }
         })
-        return venue
+        return {
+            venue: venue
+        }
     }
 
-    async getAllVenue(){
-        return await this.venueRepository.find()
+    async getAllVenue(): Promise<ResponseVenueDto[]>{
+        const venues = await this.venueRepository.find()
+
+        return venues.map((venue)=>({
+            venue: venue
+        }))
     }
 
     async getUserToVenue(id_venue: number): Promise<{id: number, username: string, role: Role}[]>{
@@ -159,6 +165,23 @@ export class VenuesService {
             error: null,
             statusCode: 200
         }
+    }
+
+    async deleteUserFromVenue(id_venue: number, id_user: number): Promise<ResponseDeleteDto>{
+        await this.venueUserRepository.
+        createQueryBuilder()
+        .delete()
+        .from(VenueUser)
+        .where("venue_user.id_venue = :id_venue", {id_venue})
+        .andWhere("venue_user.id_user = :id_user", {id_user})
+        .execute()
+        
+        return {
+            message: "User successfully deleted from the venue",
+            error: null,
+            statusCode: 200
+        }
+
     }
 
 }

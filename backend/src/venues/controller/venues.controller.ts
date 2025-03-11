@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards, ValidationPipe } from '@nestjs/common';
 import { VenuesService } from '../service/venues.service';
 import { CreateVenueDto } from '../dto/create-venue.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConflictResponse, ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ResponseVenueDto } from '../dto/response-venue.dto';
 import { AuthGuard } from 'src/auth/guards/auth/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
@@ -10,6 +10,7 @@ import { Role } from 'src/enums/roles.enum';
 import { AddUserToVenueDto } from '../dto/add-user-venue.dto';
 import { UpdateVenueDto } from '../dto/update-venue.dto';
 import { IsEnum } from 'class-validator';
+import { ResponseDeleteDto } from 'src/dto/response-delete.dto';
 
 @ApiBearerAuth()
 @Controller('venues')
@@ -20,6 +21,12 @@ export class VenuesController {
     // Insert new venue
     @UseGuards(AuthGuard)
     @Post('insert')
+    @ApiOkResponse({
+        description: "Insert new venue"
+    })
+    @ApiConflictResponse({
+        description: "Venue already registered"
+      })
     async insertNewVenue(@Request() req: Request, @Body(ValidationPipe) createVenueDto: CreateVenueDto): Promise<ResponseVenueDto>{
         return this.venuesService.insertNewVenue(req, createVenueDto)
     }
@@ -28,10 +35,16 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Post('/:id/add/user')
+    @ApiOkResponse({
+        description: "Add user to venue"
+    })
+    @ApiNotFoundResponse({
+        description: "User not found"
+    })
     async addUserToVenue(
         @Param('id', ParseIntPipe) id: number,
         @Body(ValidationPipe)  addUserToVenueDto: AddUserToVenueDto
-    ){
+    ): Promise <ResponseVenueDto>{
         return this.venuesService.addUserToVenue(id, addUserToVenueDto)
     }
 
@@ -39,13 +52,19 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Get('/:id')
-    async getVenueById(@Param('id', ParseIntPipe) id: number){
+    @ApiOkResponse({
+        description: "Get venue by id"
+    })
+    async getVenueById(@Param('id', ParseIntPipe) id: number): Promise<ResponseVenueDto>{
         return this.venuesService.getVenueById(id)
     }
 
     // Get all venue
     @Get('all')
-    async getAllVenue(){
+    @ApiOkResponse({
+        description: "Get all venue"
+    })
+    async getAllVenue(): Promise<ResponseVenueDto[]>{
         return this.venuesService.getAllVenue()
     }
 
@@ -53,7 +72,10 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Get('/:id_venue/users')
-    async getUserToVenue(@Param('id_venue', ParseIntPipe) id_venue: number){
+    @ApiOkResponse({
+        description: "List of all users added to the venue"
+    })
+    async getUserToVenue(@Param('id_venue', ParseIntPipe) id_venue: number): Promise<{id: number, username: string, role: Role}[]>{
         return this.venuesService.getUserToVenue(id_venue)
     }
 
@@ -61,7 +83,13 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Patch('update/:id')
-    async updateVenue(@Param('id', ParseIntPipe) id: number, @Body() updateVenueDto: UpdateVenueDto){
+    @ApiOkResponse({
+        description: "Update venue"
+    })
+    @ApiNotFoundResponse({
+        description: "No venue found"
+    })
+    async updateVenue(@Param('id', ParseIntPipe) id: number, @Body() updateVenueDto: UpdateVenueDto): Promise <ResponseVenueDto>{
         return this.venuesService.updateVenue(id, updateVenueDto)
     }
 
@@ -69,6 +97,9 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Put(":id_venue/user/:id_user/role")
+    @ApiOkResponse({
+        description: "Update role user added to the venue"
+    })
     async updateRoleToVenue(
         @Param('id_venue', ParseIntPipe) id_venue: number,
         @Param('id_user', ParseIntPipe) id_user: number,
@@ -81,8 +112,28 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Delete('delete/:id')
-    async deleteVenue(@Param('id', ParseIntPipe) id: number){
+    @ApiOkResponse({
+        description: "Delete venue"
+    })
+    @ApiNotFoundResponse({
+        description: "No venue found"
+    })
+    async deleteVenue(@Param('id', ParseIntPipe) id: number): Promise<ResponseDeleteDto>{
         return this.venuesService.deleteVenue(id)
+    }
+
+    // Delete a user from a venue
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(Role.OWNER)
+    @Delete('delete/:id_venue/delete/user/:id_user')
+    @ApiOkResponse({
+        description: "Delete a user from a venue"
+    })
+    async deleteUserFromVenue(
+        @Param('id_venue', ParseIntPipe) id_venue: number,
+        @Param('id_user', ParseIntPipe) id_user: number
+    ): Promise<ResponseDeleteDto>{
+        return this.venuesService.deleteUserFromVenue(id_venue, id_user)
     }
 
 }
