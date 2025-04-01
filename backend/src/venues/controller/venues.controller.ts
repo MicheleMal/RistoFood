@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query, Request, UseGuards, ValidationPipe } from '@nestjs/common';
 import { VenuesService } from '../service/venues.service';
 import { CreateVenueDto } from '../dto/create-venue.dto';
-import { ApiBearerAuth, ApiConflictResponse, ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConflictResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam } from '@nestjs/swagger';
 import { ResponseVenueDto } from '../dto/response-venue.dto';
 import { AuthGuard } from 'src/auth/guards/auth/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
@@ -21,7 +21,11 @@ export class VenuesController {
     // Insert new venue
     @UseGuards(AuthGuard)
     @Post('insert')
+    @ApiBody({
+        type: CreateVenueDto
+    })
     @ApiOkResponse({
+        type: ResponseVenueDto,
         description: "Insert new venue"
     })
     @ApiConflictResponse({
@@ -35,7 +39,16 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Post('/:id/add/user')
+    @ApiBody({
+        type: AddUserToVenueDto
+    })
+    @ApiParam({
+        name: "id",
+        type: Number,
+        description: "Id venue"
+      })
     @ApiOkResponse({
+        type: ResponseVenueDto,
         description: "Add user to venue"
     })
     @ApiNotFoundResponse({
@@ -52,7 +65,13 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Get('/:id')
+    @ApiParam({
+        name: "id",
+        type: Number,
+        description: "Id venue"
+      })
     @ApiOkResponse({
+        type: ResponseVenueDto,
         description: "Get venue by id"
     })
     async getVenueById(@Param('id', ParseIntPipe) id: number): Promise<ResponseVenueDto>{
@@ -62,6 +81,7 @@ export class VenuesController {
     // Get all venue
     @Get('all')
     @ApiOkResponse({
+        type: [ResponseVenueDto],
         description: "Get all venue"
     })
     async getAllVenue(): Promise<ResponseVenueDto[]>{
@@ -72,6 +92,11 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Get('/:id_venue/users')
+    @ApiParam({
+        name: "id_venue",
+        type: Number,
+        description: "Id venue"
+      })
     @ApiOkResponse({
         description: "List of all users added to the venue"
     })
@@ -83,7 +108,16 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Patch('update/:id')
+    @ApiParam({
+        name: "id",
+        type: Number,
+        description: "Id venue"
+    })
+    @ApiBody({
+        type: UpdateVenueDto
+    })
     @ApiOkResponse({
+        type: ResponseVenueDto,
         description: "Update venue"
     })
     @ApiNotFoundResponse({
@@ -97,6 +131,17 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Put(":id_venue/user/:id_user/role")
+    @ApiParam({
+        name: "id_venue",
+        type: Number,
+        description: "Id venue"
+    })
+    @ApiParam({
+        name: "id_user",
+        type: Number,
+        description: "Id user"
+    })
+    //TODO: Scrivere dto e mettere tipo di ritorno
     @ApiOkResponse({
         description: "Update role user added to the venue"
     })
@@ -112,7 +157,13 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Delete('delete/:id')
+    @ApiParam({
+        name: "id",
+        type: Number,
+        description: "Id venue"
+      })
     @ApiOkResponse({
+        type: ResponseDeleteDto,
         description: "Delete venue"
     })
     @ApiNotFoundResponse({
@@ -126,7 +177,18 @@ export class VenuesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.OWNER)
     @Delete('delete/:id_venue/delete/user/:id_user')
+    @ApiParam({
+        name: "id_venue",
+        type: Number,
+        description: "Id venue"
+      })
+      @ApiParam({
+        name: "id_user",
+        type: Number,
+        description: "id user"
+      })
     @ApiOkResponse({
+        type: ResponseDeleteDto,
         description: "Delete a user from a venue"
     })
     async deleteUserFromVenue(

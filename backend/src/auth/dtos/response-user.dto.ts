@@ -5,7 +5,9 @@ import { Role } from 'src/enums/roles.enum';
 export class ResponseUserDto {
 
   @ApiProperty({
-    description: "Username"
+    name: "username",
+    description: "Username",
+    type: "string"
 })
   @IsString()
   @IsNotEmpty()

@@ -1,4 +1,4 @@
-import { ApiProperty, ApiSchema } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, ApiSchema } from "@nestjs/swagger";
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 @ApiSchema({
@@ -6,32 +6,40 @@ import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 })
 export class UpdateVenueDto{
 
-    @ApiProperty({
+    @ApiPropertyOptional({
+        name: "Name",
         description: "Unique name of the venue",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
     name?: string
     
-    @ApiProperty({
-        description: "City of the venue"
+    @ApiPropertyOptional({
+        name: "City",
+        description: "City of the venue",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
     city?: string
 
-    @ApiProperty({
-        description: "Address of the venue"
+    @ApiPropertyOptional({
+        name: "Address",
+        description: "Address of the venue",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()
     @IsOptional()
     address?: string
     
-    @ApiProperty({
-        description: "Unique phone number venue"
+    @ApiPropertyOptional({
+        name: "Phone number",
+        description: "Unique phone number venue",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()

@@ -8,10 +8,11 @@ import { User } from 'src/users/user.entity';
 import { Dish } from 'src/dishes/dish.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { VenueUser } from 'src/venues/venue-user.entity';
+import { Venue } from 'src/venues/venue.entity';
 
 @Module({
     imports: [TypeOrmModule.forFeature(
-        [Order, OrderDish, User, Dish, VenueUser]
+        [Order, OrderDish, User, Dish, Venue, VenueUser]
     )],
     controllers: [OrdersController],
     providers: [OrdersService]

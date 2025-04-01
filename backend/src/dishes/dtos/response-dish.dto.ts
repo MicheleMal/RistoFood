@@ -5,34 +5,43 @@ import { Category } from "src/enums/categories.enum"
 export class ResponseDishDto{
 
     @ApiProperty({
-        description: "Unique id the dish"
+        name: "id",
+        description: "Unique id the dish",
+        type: "string"
     })
     @IsNumber()
     @IsNotEmpty()
     id: number
 
     @ApiProperty({
-        description: "Name dish for menu"
+        name: "name",
+        description: "Name dish for menu",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()
     name: string
 
     @ApiProperty({
-        description: "Description dish for menu"
+        name: "description",
+        description: "Description dish for menu",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()
     description: string
 
     @ApiProperty({
-        description: "Price dish for menu"
+        name: "price",
+        description: "Price dish for menu",
+        type: "number"
     })
     @IsNumber()
     @IsNotEmpty()
     price: number
 
     @ApiProperty({
+        name: "category",
         description: "Category dish for menu",
         enum: Category,
         example: Category.PRIMO

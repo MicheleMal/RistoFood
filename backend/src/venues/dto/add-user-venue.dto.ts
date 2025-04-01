@@ -11,6 +11,7 @@ export class AddUserToVenueDto{
     
     @ApiProperty({
         description: "Email of the user to add",
+        type: "string"
     })
     @IsEmail()
     @IsNotEmpty()
@@ -18,6 +19,7 @@ export class AddUserToVenueDto{
 
     @ApiProperty({
         description: "Role to add to user",
+        enumName: "Role",
         enum: Role,
         example: Role.STAFF
     })

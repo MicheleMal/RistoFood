@@ -12,26 +12,41 @@ import { Category } from 'src/enums/categories.enum';
 import { UpdateDishDto } from '../dtos/update-dish.dto';
 import { ResponseDishDto } from '../dtos/response-dish.dto';
 import { ResponseDeleteDto } from 'src/dto/response-delete.dto';
+import { Venue } from 'src/venues/venue.entity';
 
 @Injectable()
 export class DishesService {
   constructor(
     @InjectRepository(Dish) private dishRepository: Repository<Dish>,
+    @InjectRepository(Venue) private venueRepository: Repository<Venue>,
   ) {}
 
-  async insertNewDish(createDishDto: CreateDishDto): Promise<CreateDishDto> {
-    const newDish = await this.dishRepository.save(createDishDto);
+  async insertNewDish(
+    id_venue: number,
+    createDishDto: CreateDishDto,
+  ): Promise<CreateDishDto> {
+    const venue = await this.venueRepository.findOne({
+      where: {
+        id: id_venue,
+      },
+    });
+
+    const newDish = await this.dishRepository.save({
+      ...createDishDto,
+      venue: venue,
+    });
 
     return newDish;
   }
 
   async getAllDishes(
+    id_venue: number,
     category?: Category,
     min_price?: number,
     max_price?: number,
     page?: number,
-    limit?: number
-  ): Promise<Dish[]> {
+    limit?: number,
+  ): Promise<ResponseDishDto[]> {
     const query = this.dishRepository
       .createQueryBuilder('dish')
       .orderBy('dish.id', 'ASC')
@@ -50,21 +65,34 @@ export class DishesService {
       );
     }
 
-    if(page && limit){
+    if (page && limit) {
+      const skip = (page - 1) * limit;
 
-      const skip = (page-1)*limit
-      
-      query.limit(limit).offset(skip)
+      query.limit(limit).offset(skip);
     }
-    
+
+    query.andWhere('dish.venue = :id_venue', {id_venue})
     const allDishes = await query.getMany();
-    
+
     return allDishes;
-    
   }
 
-  async updateDish(id: number, updateDishDto: UpdateDishDto): Promise<ResponseDishDto> {
-    const updateDish = await this.dishRepository.update(id, updateDishDto);
+  async updateDish(
+    id_venue: number,
+    id_dish: number,
+    updateDishDto: UpdateDishDto,
+  ): Promise<ResponseDishDto> {
+
+    const venue = await this.venueRepository.findOne({
+      where: {
+        id: id_venue
+      }
+    })
+
+    const updateDish = await this.dishRepository.update({
+      id: id_dish,
+      venue: venue
+    }, updateDishDto);
 
     if (updateDish.affected === 0) {
       throw new NotFoundException('No dish found');
@@ -72,15 +100,26 @@ export class DishesService {
 
     const dish = await this.dishRepository.findOne({
       where: {
-        id: id,
+        id: id_dish,
+        venue: venue
       },
     });
 
-    return dish
+    return dish;
   }
 
-  async deleteDish(id: number): Promise<ResponseDeleteDto> {
-    const deleteDish = await this.dishRepository.delete(id);
+  async deleteDish(id_venue: number, id_dish: number): Promise<ResponseDeleteDto> {
+
+    const venue = await this.venueRepository.findOne({
+      where: {
+        id: id_venue
+      }
+    })
+
+    const deleteDish = await this.dishRepository.delete({
+      id: id_dish,
+      venue: venue
+    });
 
     if (deleteDish.affected === 0) {
       throw new NotFoundException('No dish found');

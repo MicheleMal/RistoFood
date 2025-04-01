@@ -23,7 +23,9 @@ import { ApiProperty, ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 })
 export class CreateOrderDto {
   @ApiPropertyOptional({
+    name: "Number person",
     description: 'Number person at the table',
+    type: "number",
     minimum: 1,
     default: 1,
   })
@@ -34,7 +36,9 @@ export class CreateOrderDto {
   n_person?: number;
 
   @ApiProperty({
+    name: "Table number",
     description: 'Table number',
+    type: "number"
   })
   @IsNumber()
   @IsNotEmpty()
@@ -42,13 +46,16 @@ export class CreateOrderDto {
 
   @ApiProperty({
     description: 'Cover charge',
+    type: "number"
   })
   @IsNumber()
   @IsNotEmpty()
   cover_charge: number;
 
   @ApiPropertyOptional({
+    name: "Total price",
     description: 'Total price of the order',
+    type: "number"
   })
   @IsOptional()
   @IsNotEmpty()
@@ -56,6 +63,7 @@ export class CreateOrderDto {
   price_total?: number;
 
   @ApiPropertyOptional({
+    name: "Order status",
     description: 'Order status',
     enum: State,
     default: State.WAIT,
@@ -69,7 +77,9 @@ export class CreateOrderDto {
   state?: State;
 
   @ApiPropertyOptional({
+    name: "Notes",
     description: 'Additional notes to the order',
+    type: "string"
   })
   @IsString()
   @IsNotEmpty()
@@ -77,7 +87,9 @@ export class CreateOrderDto {
   notes?: string;
 
   @ApiPropertyOptional({
+    name: "Order dates",
     description: 'Order dates',
+    type: Date
   })
   @IsNotEmpty()
   @IsOptional()
@@ -86,6 +98,7 @@ export class CreateOrderDto {
   date?: Date;
 
   @ApiProperty({
+    name: "Order dish",
     description: 'List of dishes within the order',
     type: [OrderDishDto],
     isArray: true,
@@ -97,7 +110,9 @@ export class CreateOrderDto {
   dishes: OrderDishDto[];
 
   @ApiPropertyOptional({
+    name: "Id order",
     description: 'Unique id the order',
+    type: "number"
   })
   @IsOptional()
   @IsNotEmpty()
@@ -105,7 +120,9 @@ export class CreateOrderDto {
   id_order?: number;
 
   @ApiPropertyOptional({
+    name: "Id user",
     description: 'Unique ID of the user who creates the order',
+    type: "number"
   })
   @IsNumber()
   @IsOptional()

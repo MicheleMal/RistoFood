@@ -10,11 +10,13 @@ import { ResponseOrderDto } from '../dtos/response-order.dto';
 import { UpdateOrderDto } from '../dtos/update-order.dto';
 import { State } from 'src/enums/states.enum';
 import { ResponseDeleteDto } from 'src/dto/response-delete.dto';
+import { Venue } from 'src/venues/venue.entity';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private orderRepository: Repository<Order>,
+    @InjectRepository(Venue) private venueRepository: Repository<Venue>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Dish) private dishRepository: Repository<Dish>,
     @InjectRepository(OrderDish)
@@ -22,6 +24,7 @@ export class OrdersService {
   ) {}
 
   async insertNewOrder(
+    id_venue: number,
     createOrderDto: CreateOrderDto,
     req: Request,
   ): Promise<ResponseOrderDto> {
@@ -33,10 +36,17 @@ export class OrdersService {
       },
     });
 
+    const venue = await this.venueRepository.findOne({
+      where: {
+        id: id_venue,
+      },
+    });
+
     // createOrderDto.date = new Date()
     const newOrder = await this.orderRepository.save({
       ...createOrderDto,
       user: user,
+      venue: venue,
     });
 
     let priceTotal = 0;
@@ -85,6 +95,7 @@ export class OrdersService {
   }
 
   async getAllOrder(
+    id_venue: number,
     state?: State,
     page?: number,
     limit?: number,
@@ -103,6 +114,7 @@ export class OrdersService {
       query.limit(limit).offset((page - 1) * limit);
     }
 
+    query.andWhere('o.venue = :id_venue', {id_venue})
     const orders = await query.getMany();
 
     return orders.map((order) => ({
@@ -127,11 +139,19 @@ export class OrdersService {
     }));
   }
 
-  async getOrderByTableNumber(n_table: number): Promise<ResponseOrderDto[]> {
+  async getOrderByTableNumber(id_venue: number, n_table: number): Promise<ResponseOrderDto[]> {
+   
+    const venue = await this.venueRepository.findOne({
+      where: {
+        id: id_venue
+      }
+    })
+
     const orders = await this.orderRepository.find({
       where: {
         n_table: n_table,
         state: State.COMPLETED,
+        venue: venue
       },
       relations: ['user', 'order_dishes', 'order_dishes.dish'],
     });
@@ -164,9 +184,20 @@ export class OrdersService {
 
   async updateOrder(
     updateOrderDto: UpdateOrderDto,
-    id: number,
+    id_venue: number,
+    id_order: number,
   ): Promise<ResponseOrderDto> {
-    const updateOrder = await this.orderRepository.update(id, updateOrderDto);
+
+    const venue = await this.venueRepository.findOne({
+      where: {
+        id: id_venue
+      }
+    })
+
+    const updateOrder = await this.orderRepository.update({
+      id: id_order,
+      venue: venue
+    }, updateOrderDto);
 
     if (updateOrder.affected === 0) {
       throw new NotFoundException('No order found');
@@ -174,7 +205,8 @@ export class OrdersService {
 
     const order = await this.orderRepository.findOne({
       where: {
-        id: id,
+        id: id_order,
+        venue: venue
       },
       relations: ['user', 'order_dishes', 'order_dishes.dish'],
     });
@@ -212,6 +244,7 @@ export class OrdersService {
       .set({ quantity })
       .where('order_dish.id_order = :id_order', { id_order })
       .andWhere('order_dish.id_dish = :id_dish', { id_dish })
+      .andWhere('order_dish.')
       .execute();
 
     const order = await this.orderRepository.findOne({
@@ -263,8 +296,18 @@ export class OrdersService {
     };
   }
 
-  async deleteOrder(id: number): Promise<ResponseDeleteDto> {
-    const deleteOrder = await this.orderRepository.delete(id);
+  async deleteOrder(id_venue: number, id_order: number): Promise<ResponseDeleteDto> {
+    
+    const venue = await this.venueRepository.findOne({
+      where: {
+        id: id_venue
+      }
+    })
+    
+    const deleteOrder = await this.orderRepository.delete({
+      id: id_order,
+      venue: venue
+    });
 
     if (deleteOrder.affected === 0) {
       throw new NotFoundException('No order found');
@@ -277,26 +320,28 @@ export class OrdersService {
     };
   }
 
-  async getDailyStats() {
+  async getDailyStats(id_venue: number) {
     const currentDay = new Date().getDate();
 
     const query = this.orderRepository
       .createQueryBuilder('o')
       .select('COUNT(o.id)', 'total_orders')
       .addSelect('SUM(o.price_total)', 'earnings')
-      .where(`DAY(o.date) = :currentDay`, { currentDay });
+      .where(`DAY(o.date) = :currentDay`, { currentDay })
+      .andWhere('o.venue = :id_venue', {id_venue});
 
     const orders = await query.getRawMany();
 
     return orders;
   }
 
-  async getMonthlyStats() {
+  async getMonthlyStats(id_venue: number) {
     const query = this.orderRepository
       .createQueryBuilder('o')
       .select('MONTH(o.date)', 'month')
       .addSelect('COUNT(o.id)', 'total_orders')
       .addSelect('SUM(o.price_total)', 'earnings')
+      .where('o.venue = :id_venue', {id_venue})
       .groupBy('MONTH(o.date)');
 
     const orders = await query.getRawMany();
@@ -304,12 +349,13 @@ export class OrdersService {
     return orders;
   }
 
-  async getAnnualStats() {
+  async getAnnualStats(id_venue: number) {
     const query = this.orderRepository
       .createQueryBuilder('o')
       .select('YEAR(o.date)', 'year')
       .addSelect('COUNT(o.id)', 'total_orders')
       .addSelect('SUM(o.price_total)', 'earnings')
+      .where('o.venue = :id_venue', {id_venue})
       .groupBy('YEAR(o.date)');
 
     const orders = await query.getRawMany();
@@ -317,21 +363,21 @@ export class OrdersService {
     return orders;
   }
 
-  async rankingOrdersDishes(top?: number){
-
+  async rankingOrdersDishes(id_venue: number, top?: number) {
     const query = this.orderDishRepository
-      .createQueryBuilder("od")
-      .addSelect("SUM(od.quantity)", "n_order_dish")
-      .innerJoinAndSelect("od.dish", "d")
-      .groupBy("od.dish")
-      .orderBy("n_order_dish", "DESC")
-    
-    if(top){
-      query.limit(top)
+      .createQueryBuilder('od')
+      .addSelect('SUM(od.quantity)', 'n_order_dish')
+      .innerJoinAndSelect('od.dish', 'd')
+      .where('o.venue = :id_venue', {id_venue})
+      .groupBy('od.dish')
+      .orderBy('n_order_dish', 'DESC');
+
+    if (top) {
+      query.limit(top);
     }
 
-    const orders = await query.getRawMany()
+    const orders = await query.getRawMany();
 
-    return orders
+    return orders;
   }
 }

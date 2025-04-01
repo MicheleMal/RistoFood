@@ -7,7 +7,9 @@ import { ApiPropertyOptional, ApiSchema } from '@nestjs/swagger';
 })
 export class UpdateOrderDto {
   @ApiPropertyOptional({
+    name: "Number person",
     description: 'Number person at the table',
+    type: "number",
   })
   @IsOptional()
   @IsNotEmpty()
@@ -15,7 +17,9 @@ export class UpdateOrderDto {
   n_person?: number;
 
   @ApiPropertyOptional({
+    name: "Table number",
     description: 'Table number',
+    type: "number",
   })
   @IsOptional()
   @IsNotEmpty()
@@ -23,6 +27,8 @@ export class UpdateOrderDto {
   n_table?: number;
 
   @ApiPropertyOptional({
+    name: "State",
+    enumName: "State",
     description: 'Order status',
     enum: State,
     default: State.WAIT,

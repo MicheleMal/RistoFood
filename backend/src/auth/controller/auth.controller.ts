@@ -5,7 +5,7 @@ import { LoginUserDto } from '../dtos/login-user.dto';
 import { ResponseUserDto } from '../dtos/response-user.dto';
 import { AuthGuard } from '../guards/auth/auth.guard';
 import { ResponseTokenDto } from '../dtos/response-token.dto';
-import { ApiBearerAuth, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +18,9 @@ export class AuthController {
   })
   @ApiConflictResponse({
     description: "Email already registered"
+  })
+  @ApiBody({
+    type: CreateUserDto
   })
   async register(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
@@ -33,6 +36,9 @@ export class AuthController {
   @ApiUnauthorizedResponse({
     description: "Incorrect email or password"
   })
+  @ApiBody({
+    type: LoginUserDto
+  })
   async login(
     @Body(ValidationPipe) loginUserDto: LoginUserDto,
   ): Promise<ResponseTokenDto> {
@@ -46,6 +52,8 @@ export class AuthController {
   @ApiUnauthorizedResponse({
     description: "Incorrect email or password"
   })
+
+  //TODO: Scrivere dto
   async refresh(@Body('token') token: string, @Body('id') id: number): Promise<ResponseTokenDto>{
     return this.authService.refreshToken(id, token)
   }

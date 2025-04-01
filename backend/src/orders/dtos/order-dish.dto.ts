@@ -6,7 +6,9 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 })
 export class OrderDishDto {
   @ApiProperty({
+    name: "Id dish",
     description: 'Unique id the dish',
+    type: "number",
     minimum: 1,
     default: 1,
   })
@@ -15,7 +17,9 @@ export class OrderDishDto {
   id_dish: number;
 
   @ApiPropertyOptional({
+    name: "Name dish",
     description: 'Name dish',
+    type: "string",
   })
   @IsNotEmpty()
   @IsOptional()
@@ -23,7 +27,9 @@ export class OrderDishDto {
   name?: string;
 
   @ApiPropertyOptional({
+    name: "Description dish",
     description: 'Description dish',
+    type: "string",
   })
   @IsNotEmpty()
   @IsOptional()
@@ -31,7 +37,9 @@ export class OrderDishDto {
   description?: string;
 
   @ApiPropertyOptional({
+    name: "Price dish",
     description: 'Price dish',
+    type: "number",
   })
   @IsNumber({
     allowInfinity: false,
@@ -42,7 +50,9 @@ export class OrderDishDto {
   single_price?: number;
 
   @ApiPropertyOptional({
+    name: "Quantity",
     description: 'Quantity of the dish in the order',
+    type: "number",
   })
   @IsNotEmpty()
   @IsNumber()

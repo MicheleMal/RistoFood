@@ -8,7 +8,8 @@ import { Role } from "src/enums/roles.enum";
 export class UpdateRoleDto{
 
     @ApiProperty({
-        description: "Enter the name of the user whose role is to be changed"
+        description: "Enter the name of the user whose role is to be changed",
+        type: "string"
     })
     @IsString({
         message: "Enter a string format"
@@ -18,7 +19,8 @@ export class UpdateRoleDto{
 
     @ApiProperty({
         description: "New role to assign to the user",
-        enum: Role
+        enum: Role,
+        enumName: "Role"
     })
     @IsEnum(Role, {
         message: "You must enter a role between admin and staff"

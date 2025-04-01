@@ -1,5 +1,5 @@
 import { ApiProperty, ApiSchema } from "@nestjs/swagger"
-import { IsDecimal, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsDecimal, IsEmpty, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator"
 import { Category } from "src/enums/categories.enum"
 
 @ApiSchema({
@@ -8,21 +8,27 @@ import { Category } from "src/enums/categories.enum"
 export class CreateDishDto{
 
     @ApiProperty({
-        description: "Name dish for menu"
+        name: "name",
+        description: "Name dish for menu",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()
     name: string
 
     @ApiProperty({
-        description: "Description dish for menu"
+        name: "description",
+        description: "Description dish for menu",
+        type: "string"
     })
     @IsString()
     @IsNotEmpty()
     description: string
 
     @ApiProperty({
-        description: "Price dish for menu"
+        name: "price",
+        description: "Price dish for menu",
+        type: "number"
     })
     @IsNumber({
         allowInfinity: false,
@@ -32,6 +38,7 @@ export class CreateDishDto{
     price: number
 
     @ApiProperty({
+        name: "category",
         description: "Category dish for menu",
         enum: Category,
         example: Category.PRIMO

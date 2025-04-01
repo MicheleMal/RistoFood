@@ -15,7 +15,9 @@ import { Role } from 'src/enums/roles.enum';
 export class CreateUserDto {
 
   @ApiProperty({
+    name: "username",
     description: "Username for profile",
+    type: "string"
   })
   @IsString({
     message: 'Enter a string format',
@@ -24,14 +26,18 @@ export class CreateUserDto {
   username: string;
 
   @ApiProperty({
-    description: "Personal email to access the profile"
+    name: "email",
+    description: "Personal email to access the profile",
+    type: "string"
   })
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
   @ApiProperty({
+    name: "password",
     description: "Password to access the profile",
+    type: "string",
     minLength: 8,
   })
   @IsString({
@@ -44,7 +50,9 @@ export class CreateUserDto {
   password: string;
 
   @ApiPropertyOptional({
-    description: "Refresh token"
+    name: "refresh_toke",
+    description: "Refresh token",
+    type: "string"
   })
   @IsString({
     message: 'Enter a string format',

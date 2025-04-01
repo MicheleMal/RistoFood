@@ -13,7 +13,8 @@ import {
 export class UpdateUserDto {
 
   @ApiPropertyOptional({
-    description: "Username"
+    description: "Username",
+    type: "string"
   })
   @IsString({
     message: 'Enter a string format',
@@ -23,7 +24,8 @@ export class UpdateUserDto {
   username?: string;
 
   @ApiPropertyOptional({
-    description: "Password"
+    description: "Password",
+    type: "string"
   })
   @IsString({
     message: 'Enter a string format',
