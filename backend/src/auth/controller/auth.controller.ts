@@ -6,6 +6,7 @@ import { ResponseUserDto } from '../dtos/response-user.dto';
 import { AuthGuard } from '../guards/auth/auth.guard';
 import { ResponseTokenDto } from '../dtos/response-token.dto';
 import { ApiBearerAuth, ApiBody, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { RefreshTokenDto } from '../dtos/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -46,16 +47,17 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @ApiBody({
+    type: RefreshTokenDto
+  })
   @ApiOkResponse({
     description: "Refresh token"
   })
   @ApiUnauthorizedResponse({
     description: "Incorrect email or password"
   })
-
-  //TODO: Scrivere dto
-  async refresh(@Body('token') token: string, @Body('id') id: number): Promise<ResponseTokenDto>{
-    return this.authService.refreshToken(id, token)
+  async refresh(@Body(ValidationPipe) refreshTokenDto: RefreshTokenDto): Promise<ResponseTokenDto>{
+    return this.authService.refreshToken(refreshTokenDto)
   }
 
   @Post('logout')
